@@ -21,6 +21,7 @@ import numpy as np
 import tqdm
 
 sys.path.append("..");
+sys.path.append("/content/li2022");
 print(sys.path);
 print("pwd",os.getcwd())
 from t4c22.dataloading.t4c22_dataset import T4c22Competitions
