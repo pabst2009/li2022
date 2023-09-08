@@ -57,14 +57,16 @@ def speed_to_eta(pred_data, BASEDIR, city):
     assert eta_df["eta"].max() <= 3600.0
     return eta_df
 
+print("start sub eta");
 BASEDIR = load_basedir(fn="t4c22_config.json", pkg=t4c22)
 submission_name_input = "../data/submissions/GNN_result_eta/" 
 submission_name_ouput = "GNNv10_merge_all_eta"
-cities = ["london","melbourne","madrid"]
+cities = ["melbourne"]
+#cities = ["london","melbourne","madrid"]
 (BASEDIR / "submissions" / submission_name_ouput ).mkdir(exist_ok=True, parents=True)
 
 for city in cities:
-
+    print("city",city);
     (BASEDIR / "submissions" / submission_name_ouput / city / "labels").mkdir(exist_ok=True, parents=True)
     inputs_files = sorted(glob(submission_name_input + city +"/labels/eta_speed_test_*.parquet"))
     print(inputs_files)
@@ -93,3 +95,4 @@ with zipfile.ZipFile(submission_zip, "w") as z:
             arcname=os.path.join(city, "labels", f"eta_labels_test.parquet"),
         )
 
+print("sub eta end");

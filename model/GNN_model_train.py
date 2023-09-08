@@ -30,6 +30,7 @@ from t4c22.metric.masked_crossentropy import get_weights_from_class_fractions
 from t4c22.misc.t4c22_logging import t4c_apply_basic_logging_config
 from t4c22.t4c22_config import class_fractions
 from t4c22.t4c22_config import load_basedir
+from t4c22.t4c22_config import day_t_filter_10days
 from t4c22.dataloading.t4c22_dataset import T4c22Dataset
 from t4c22.plotting.plot_congestion_classification import plot_segment_classifications_simple
 from t4c22.misc.notebook_helpers import restartkernel  # noqa:F401
@@ -39,6 +40,10 @@ import torch.nn.functional as F
 from t4c22.misc.parquet_helpers import write_df_to_parquet
 import zipfile
 from model.utils import to_var, weight_init
+import psutil
+import time
+mem=psutil.virtual_memory()
+NWORKER=0;
 
 class GNN_Layer(MessagePassing):
    
@@ -76,10 +81,17 @@ class Edge_Attr(nn.Module):
 
     def forward(self, num_attr, cc_attr,y_init):
         em_list = []
+        print("forward mem",mem.percent,"%");
         for name, i, dim_in, dim_out in Edge_Attr.attr_dims:
             embed = getattr(self, "attr-" + name)
             attr_t = cc_attr[:,:,i]
+            pmax = np.max(list(set(attr_t.numpy().flatten())))
+            attr_t = torch.where(attr_t < 0, np.abs(attr_t)+pmax,attr_t);
+            #print("dim",i,name,(dim_in,dim_out),attr_t.shape);
+            #print("embed",embed);
+            #print("attr",pmax,set(attr_t.numpy().flatten()));
             attr_t = embed(attr_t)
+            #print(" ",name,"ok");
             em_list.append(attr_t)
         em_list.append(num_attr)
         em_list.append(y_init)
@@ -222,15 +234,20 @@ def train(model, dataset, optimizer, batch_size, device):
     optimizer.zero_grad()
     loss_f1 = torch.nn.CrossEntropyLoss(weight=city_class_weights, ignore_index=-1)
     loss_f2 = torch.nn.CrossEntropyLoss(weight=city_vol_weights, ignore_index=-1)
-    for data in tqdm.tqdm(
-        torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=9),
+    for i,data in enumerate(tqdm.tqdm(
+        #torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=9),
+        torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=NWORKER),
         "train",
         total=len(dataset) // batch_size,
-    ):
+    )):
         
         data = to_var(data,device)
 
+        print("train i",i,"model start mem",mem.percent,"%");
+        #print("dataset",len(dataset),"batchsize",batch_size);
+        #print("data",len(data));
         pred_cc, pred_speed, pred_vol = model(data, new_edge_index)
+        print("train i",i,"model end mem",mem.percent,"%");
        
         valid_count = data["edge_mask"].sum()
         loss1 = (F.mse_loss(pred_speed.squeeze(-1), data["speed_output"], reduction='none') * data["edge_mask"]).sum()/ valid_count
@@ -242,13 +259,18 @@ def train(model, dataset, optimizer, batch_size, device):
 
         loss.backward()
 
+        print("step start mem",mem.percent,"%");
+        start = time.time();
         optimizer.step()
+        print("step end mem",mem.percent,"%, took",time.time()-start);
         optimizer.zero_grad()
         losses += loss.cpu().item()
         losses1 += loss1.cpu().item()
         losses2 += loss2.cpu().item()
         losses3 += loss3.cpu().item()
+        print("train i",i," end mem",mem.percent,"%");
     lens = len(dataset) // batch_size
+    print("train end");
     print("train_loss:{:.5f} loss_cc: {:.5f} loss_speed: {:.5f} loss_vol:{:.5f}\n".format(losses/lens,losses2/lens,losses1/lens,losses3/lens))
     return losses/lens
 
@@ -268,7 +290,8 @@ def vaild(model, validation_dataset, batch_size, device):
 
     for data in tqdm.tqdm(
 
-        torch.utils.data.DataLoader(validation_dataset, batch_size=batch_size, shuffle=False, num_workers=9),
+        #torch.utils.data.DataLoader(validation_dataset, batch_size=batch_size, shuffle=False, num_workers=9),
+        torch.utils.data.DataLoader(validation_dataset, batch_size=batch_size, shuffle=False, num_workers=NWORKER),
         "vaild",
         total=len(validation_dataset) // batch_size
         ):
@@ -298,7 +321,8 @@ def test(model, test_dataset, batch_size, device):
     dfs = []
     idx = 0
     model.eval()
-    for data in tqdm.tqdm(torch.utils.data.DataLoader(test_dataset, batch_size=batch_size, shuffle=False, num_workers=16),
+    #for data in tqdm.tqdm(torch.utils.data.DataLoader(test_dataset, batch_size=batch_size, shuffle=False, num_workers=16),
+    for data in tqdm.tqdm(torch.utils.data.DataLoader(test_dataset, batch_size=batch_size, shuffle=False, num_workers=NWORKER),
                                 "test",
                                 total=len(test_dataset) // batch_size):
         data = to_var(data,device)
@@ -313,32 +337,42 @@ def test(model, test_dataset, batch_size, device):
     return df
 
 if __name__ == "__main__":
+    print("start model train");
     t4c_apply_basic_logging_config(loglevel="DEBUG")
     # load BASEDIR from file, change to your data root
     BASEDIR = load_basedir(fn="t4c22_config.json", pkg=t4c22)
     split = "train"
 
     model_save_dir = Path("../checkpoints")
+    print("checkpoint path",model_save_dir);
     model_save_dir.mkdir(exist_ok=True, parents=True)
 
-    cities = ["madrid","melbourne","london"]
+    cities = ["melbourne"]
+    #cities = ["madrid","melbourne","london"]
     vaild_scores = {}
     city_attrs ={"london":{"nodes":59110,"edges":132414,"counters":3751,"volcc_fractions":[0.29,0.22,0.49]},
                     "madrid":{"nodes":63397,"edges":121902,"counters":3875,"volcc_fractions":[0.150,0.155,0.695]},
                     "melbourne":{"nodes":49510,"edges":94871,"counters":3982,"volcc_fractions":[0.495,0.215,0.290]},}
     for city  in cities:
+        print("city",city);
         vaild_score = []
-        dataset = T4c22Dataset(root=BASEDIR, city=city, split=split, cachedir=Path("../data/tmp"))
+        print("mem",mem.percent,"%");
+        dataset = T4c22Dataset(root=BASEDIR, city=city, split=split, cachedir=Path("../data/tmp"),day_t_filter=day_t_filter_10days)
+        #dataset = T4c22Dataset(root=BASEDIR, city=city, split=split, cachedir=Path("../data/tmp"))
         spl = int(((0.8 * len(dataset)) // 2) * 2)
+        print("dataset",dataset);
+        print("n",len(dataset),"spl",spl);
         train_dataset, val_dataset = torch.utils.data.random_split(dataset, [spl, len(dataset) - spl])
-        
+       
+        print("train dataset",train_dataset);
+        print("n",len(train_dataset));
         city_attr = city_attrs[city]
 
         city_class_fractions = class_fractions[city]
         city_class_weights = torch.tensor(get_weights_from_class_fractions([city_class_fractions[c] for c in ["green", "yellow", "red"]])).float()
         city_vol_weights = torch.tensor(get_weights_from_class_fractions(city_attr["volcc_fractions"])).float()
 
-        batch_size = 2
+        batch_size =1 
         eval_steps = 1
         epochs = 20
         runs = 9
@@ -352,7 +386,7 @@ if __name__ == "__main__":
         hidden_dim = 64
         os.environ['CUDA_VISIBLE_DEVICES']= '0' 
         device = "cuda" if torch.cuda.is_available() else "cpu"
-
+        print("device",device);
 
         device = torch.device(device)
 
@@ -375,17 +409,22 @@ if __name__ == "__main__":
         new_edge_index = torch.tensor(new_edge_index, dtype=torch.long)
         edge_indexs = []
         for i in range(batch_size):
+            print("%d/%d"%(i,batch_size));
             x = new_edge_index+(i*city_attr["edges"])
             edge_indexs.append(x)
         new_edge_index  = torch.cat(edge_indexs,dim=-1)
         new_edge_index = new_edge_index.to(device)
 
+        print("mem",mem.percent,"%");
 
         for run in tqdm.tqdm(range(runs), desc="runs", total=runs):
+            #print("run",run);
 
             model.apply(weight_init)
             best_score = 1000
-            optimizer = torch.optim.AdamW(
+            #optimizer = torch.optim.AdamW(
+            optimizer = torch.optim.Adam(
+            #optimizer = torch.optim.SGD(
                     [
                         {"params": model.parameters()}
                     ],
@@ -394,6 +433,7 @@ if __name__ == "__main__":
                 )
 
             for epoch in tqdm.tqdm(range(1, 1 + epochs), "epochs", total=epochs):
+                #print("epoch",epoch);
                 losses = train(model,  dataset=train_dataset, optimizer=optimizer, batch_size=batch_size, device=device)
                 train_losses[(run, epoch)] = losses
                 if epoch % eval_steps == 0:
@@ -409,4 +449,4 @@ if __name__ == "__main__":
         vaild_scores[city] = best_score 
         print(vaild_score)
     print(vaild_scores)
- 
+    print("train end"); 

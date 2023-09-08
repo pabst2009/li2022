@@ -62,6 +62,7 @@ def load_basedir(fn: Path = None, pkg=t4c22) -> Path:
 def day_t_filter(day: str, t: int, day_whitelist=None, t_whitelist=None, weekday_whitelist=None) -> bool:
     """Filter for day and t."""
     if day_whitelist is not None:
+        #print("day",day,type(day));
         return day in day_whitelist
     if t_whitelist is not None:
         return t in t_whitelist
@@ -77,6 +78,8 @@ DF_FILTER = Callable[[pd.DataFrame], pd.DataFrame]
 # 6am-10pm all days of the week:
 day_t_filter_weekdays_daytime_only: DAY_T_FILTER = partial(day_t_filter, t_whitelist=set(range(6 * 4, 22 * 4)), weekday_whitelist=set(range(7)))
 
+day_t_filter_10days: DAY_T_FILTER = partial(day_t_filter, day_whitelist=['2020-06-01','2020-06-02','2020-06-04'], t_whitelist=set(range(6 * 4, 22 * 4)), weekday_whitelist=set(range(7)))
+#day_t_filter_10days: DAY_T_FILTER = partial(day_t_filter, day_whitelist=['2020-06-01','2020-06-02','2020-06-04','2020-06-05','2020-06-06','2020-06-07'])
 
 def day_t_filter_to_df_filter(df: pd.DataFrame, filter: DAY_T_FILTER, tmp_column_name="_included") -> pd.DataFrame:
     """Filter frame on day and t columns through given filter.
@@ -136,7 +139,9 @@ def load_inputs(basedir: Path, city, split="train", day: Optional[str] = None, d
     -------
     """
     infix = "" if day is None else f"_{day}"
-    fn = basedir / split / city / "input" / f"counters{infix}.parquet"
+    fn = basedir / split / city / "cluster_input" / f"counters{infix}.parquet"
+    #fn = basedir / split / city / "input" / f"counters{infix}.parquet"
+    #print("t4c22config.load_inputs",fn);
     df = pq.read_table(fn).to_pandas()
     if df_filter is not None:
         df = df_filter(df)

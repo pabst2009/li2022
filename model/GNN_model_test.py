@@ -350,6 +350,7 @@ def test_eta(model, test_dataset, batch_size, device):
 
 
 if __name__ == "__main__":
+    print("start test");
     t4c_apply_basic_logging_config(loglevel="DEBUG")
     # load BASEDIR from file, change to your data root
     BASEDIR = load_basedir(fn="t4c22_config.json", pkg=t4c22)
@@ -359,7 +360,8 @@ if __name__ == "__main__":
     model_save_dir = Path("../checkpoints")
     model_save_dir.mkdir(exist_ok=True, parents=True)
     submission_name = "GNN_result_"+competition
-    cities = ["london","melbourne","madrid"]
+    cities = ["melbourne"]
+    #cities = ["london","melbourne","madrid"]
     city_attrs ={"london":{"nodes":59110,"edges":132414,"counters":3751,"volcc_fractions":[0.29,0.22,0.49]},
                     "madrid":{"nodes":63397,"edges":121902,"counters":3875,"volcc_fractions":[0.150,0.155,0.695]},
                     "melbourne":{"nodes":49510,"edges":94871,"counters":3982,"volcc_fractions":[0.495,0.215,0.290]},}
@@ -371,14 +373,17 @@ if __name__ == "__main__":
 
 
     for city  in cities:
+        print("city",city);
 
         test_dataset = T4c22Dataset(root=BASEDIR, city=city, split=split, cachedir=Path("../data/tmp"))
         city_attr = city_attrs[city]
+        print(1);
         
         city_class_fractions = class_fractions[city]
         city_class_weights = torch.tensor(get_weights_from_class_fractions([city_class_fractions[c] for c in ["green", "yellow", "red"]])).float()
         city_vol_weights = torch.tensor(get_weights_from_class_fractions(city_attr["volcc_fractions"])).float()
 
+        print(2);
         batch_size = 1
         eval_steps = 1
         epochs = 20
@@ -400,11 +405,14 @@ if __name__ == "__main__":
         city_vol_weights = city_vol_weights.to(device)
         train_losses = defaultdict(lambda: [])
         val_losses = defaultdict(lambda: -1)
+        print(3);
 
         new_edge_index  = np.load("../data/road_graph/{}/new_edge_index.npy".format(city))
+        print(4);
         new_edge_index = torch.tensor(new_edge_index, dtype=torch.long)
         edge_indexs = []
         for i in range(batch_size):
+            print("%d/%d"%(i,batch_size));
             x = new_edge_index+(i*city_attr["edges"])
             edge_indexs.append(x)
         new_edge_index  = torch.cat(edge_indexs,dim=-1)
@@ -446,4 +454,5 @@ if __name__ == "__main__":
 
 
 
+    print("test end");
 

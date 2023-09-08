@@ -11,16 +11,18 @@ from t4c22.misc.parquet_helpers import load_df_from_parquet
 from t4c22.misc.parquet_helpers import write_df_to_parquet
 import zipfile
 
-
+print("start sub cc");
 BASEDIR = load_basedir(fn="t4c22_config.json", pkg=t4c22)
 submission_name_input = "../data/submission/GNN_result_cc/"
 submission_name_ouput = "ensemble_cc_result"
 
-cities = ["london","melbourne","madrid"]
+cities = ["melbourne"]
+#cities = ["london","melbourne","madrid"]
 (BASEDIR / "submission" / submission_name_ouput ).mkdir(exist_ok=True, parents=True)
 
 
 for city in cities:
+    print("city",city);
     
     (BASEDIR / "submission" / submission_name_ouput / city / "labels").mkdir(exist_ok=True, parents=True)
     
@@ -49,3 +51,4 @@ with zipfile.ZipFile(submission_zip, "w") as z:
             filename=BASEDIR / "submission" / submission_name_ouput / city / "labels" / f"cc_labels_test.parquet",
             arcname=os.path.join(city, "labels", f"cc_labels_test.parquet"),
         )
+print("sub cc end");

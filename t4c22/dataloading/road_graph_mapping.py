@@ -149,8 +149,10 @@ class TorchRoadGraphMapping:
             data = df_x[(df_x["test_idx"] == idx)].copy()
         else:
             data = df_x[(df_x["day"] == day) & (df_x["t"] == t)].copy()
-            
+        
+        #print(day,list(data.keys()));
         cluster = data['cluster'].values[0]
+        #print(day,"ok");
         data['vol'] = np.array(data['volumes_1h'].to_numpy().tolist())[:,3]    
         data = self.dc.merge(data,on=["node_id"],how = "left")
         x = torch.tensor(data['vol'].values).float()

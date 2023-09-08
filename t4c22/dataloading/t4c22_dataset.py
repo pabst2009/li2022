@@ -84,6 +84,8 @@ class T4c22Dataset(torch.utils.data.Dataset):
         self.day_t_filter = day_t_filter if split != "test" else None
         self.competition = competition
 
+        #print("filter",day_t_filter);
+
         self.torch_road_graph_mapping = TorchRoadGraphMapping(
             city=city,
             edge_attributes=edge_attributes,
@@ -99,6 +101,7 @@ class T4c22Dataset(torch.utils.data.Dataset):
             self.day_t = [("test", t) for t in range(num_tests)]
         else:
             self.day_t = [(day, t) for day in cc_dates(self.root, city=city, split=self.split) for t in range(4, 96) if self.day_t_filter(day, t)]
+        #print("dataload",split,self.day_t);
 
     def __len__(self) -> int:
         if self.limit is not None:
