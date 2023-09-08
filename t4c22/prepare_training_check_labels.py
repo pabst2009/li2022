@@ -20,6 +20,8 @@ from typing import Optional
 import numpy as np
 import tqdm
 
+import sys
+sys.path.append("..");
 from t4c22.dataloading.t4c22_dataset import T4c22Competitions
 from t4c22.evaluation.generate_test_sets import CITIES
 from t4c22.misc.parquet_helpers import load_df_from_parquet
