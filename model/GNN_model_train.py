@@ -359,7 +359,6 @@ if __name__ == "__main__":
         print("mem",mem.percent,"%");
         #dataset = T4c22Dataset(root=BASEDIR, city=city, split=split, cachedir=Path("../data/tmp"),day_t_filter=day_t_filter_10days)
         dataset = T4c22Dataset(root=BASEDIR, city=city, split=split, cachedir=Path("../data/tmp"),day_t_filter=day_t_filter_months)
-        exit();
         #dataset = T4c22Dataset(root=BASEDIR, city=city, split=split, cachedir=Path("../data/tmp"))
         spl = int(((0.8 * len(dataset)) // 2) * 2)
         print("dataset",dataset);
