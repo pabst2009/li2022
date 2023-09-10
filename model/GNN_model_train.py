@@ -85,8 +85,8 @@ class Edge_Attr(nn.Module):
         for name, i, dim_in, dim_out in Edge_Attr.attr_dims:
             embed = getattr(self, "attr-" + name)
             attr_t = cc_attr[:,:,i]
-            pmax = np.max(list(set(attr_t.numpy().flatten())))
-            attr_t = torch.where(attr_t < 0, np.abs(attr_t)+pmax,attr_t);
+            #pmax = np.max(list(set(attr_t.numpy().flatten())))
+            #attr_t = torch.where(attr_t < 0, np.abs(attr_t)+pmax,attr_t);
             #print("dim",i,name,(dim_in,dim_out),attr_t.shape);
             #print("embed",embed);
             #print("attr",pmax,set(attr_t.numpy().flatten()));
