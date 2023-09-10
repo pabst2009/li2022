@@ -51,8 +51,8 @@ if false; then
   exit
 fi
 
-#if false; then
-if true; then
+if false; then
+#if true; then
   cd model
   rm tmp1.txt
   python -u GNN_model_train.py

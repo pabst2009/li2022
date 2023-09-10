@@ -43,7 +43,7 @@ from model.utils import to_var, weight_init
 import psutil
 import time
 mem=psutil.virtual_memory()
-NWORKER=0;
+NWORKER=9;
 
 class GNN_Layer(MessagePassing):
    
@@ -243,11 +243,11 @@ def train(model, dataset, optimizer, batch_size, device):
         
         data = to_var(data,device)
 
-        print("train i",i,"model start mem",mem.percent,"%");
+        #print("train i",i,"model start mem",mem.percent,"%");
         #print("dataset",len(dataset),"batchsize",batch_size);
         #print("data",len(data));
         pred_cc, pred_speed, pred_vol = model(data, new_edge_index)
-        print("train i",i,"model end mem",mem.percent,"%");
+        #print("train i",i,"model end mem",mem.percent,"%");
        
         valid_count = data["edge_mask"].sum()
         loss1 = (F.mse_loss(pred_speed.squeeze(-1), data["speed_output"], reduction='none') * data["edge_mask"]).sum()/ valid_count
@@ -259,18 +259,18 @@ def train(model, dataset, optimizer, batch_size, device):
 
         loss.backward()
 
-        print("step start mem",mem.percent,"%");
+        #print("step start mem",mem.percent,"%");
         start = time.time();
         optimizer.step()
-        print("step end mem",mem.percent,"%, took",time.time()-start);
+        #print("step end mem",mem.percent,"%, took",time.time()-start);
         optimizer.zero_grad()
         losses += loss.cpu().item()
         losses1 += loss1.cpu().item()
         losses2 += loss2.cpu().item()
         losses3 += loss3.cpu().item()
-        print("train i",i," end mem",mem.percent,"%");
+        #print("train i",i," end mem",mem.percent,"%");
     lens = len(dataset) // batch_size
-    print("train end");
+    #print("train end");
     print("train_loss:{:.5f} loss_cc: {:.5f} loss_speed: {:.5f} loss_vol:{:.5f}\n".format(losses/lens,losses2/lens,losses1/lens,losses3/lens))
     return losses/lens
 
@@ -357,8 +357,8 @@ if __name__ == "__main__":
         print("city",city);
         vaild_score = []
         print("mem",mem.percent,"%");
-        dataset = T4c22Dataset(root=BASEDIR, city=city, split=split, cachedir=Path("../data/tmp"),day_t_filter=day_t_filter_10days)
-        #dataset = T4c22Dataset(root=BASEDIR, city=city, split=split, cachedir=Path("../data/tmp"))
+        #dataset = T4c22Dataset(root=BASEDIR, city=city, split=split, cachedir=Path("../data/tmp"),day_t_filter=day_t_filter_10days)
+        dataset = T4c22Dataset(root=BASEDIR, city=city, split=split, cachedir=Path("../data/tmp"))
         spl = int(((0.8 * len(dataset)) // 2) * 2)
         print("dataset",dataset);
         print("n",len(dataset),"spl",spl);
@@ -422,8 +422,8 @@ if __name__ == "__main__":
 
             model.apply(weight_init)
             best_score = 1000
-            #optimizer = torch.optim.AdamW(
-            optimizer = torch.optim.Adam(
+            optimizer = torch.optim.AdamW(
+            #optimizer = torch.optim.Adam(
             #optimizer = torch.optim.SGD(
                     [
                         {"params": model.parameters()}
