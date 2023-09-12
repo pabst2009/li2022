@@ -1,4 +1,4 @@
-name: t42cc
+name: t4c22
 channels:
   - pytorch
   - pyg
@@ -163,4 +163,4 @@ dependencies:
     - wcwidth==0.2.5
     - webencodings==0.5.1
     - widgetsnbextension==3.6.1
-prefix: /opt/miniconda3/envs/t42cc
+prefix: /opt/miniconda3/envs/t4c22
