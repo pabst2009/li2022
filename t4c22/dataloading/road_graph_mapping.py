@@ -85,6 +85,7 @@ class TorchRoadGraphMapping:
             df[key] = df[key].apply(lambda x: (x - mean) / std)
         num_attr = torch.from_numpy(np.array(df[["parsed_maxspeed",'flow' , "length_meters","counter_distance","limit_speed"]].values,dtype=float))
         edge_attr["num_attr"] = num_attr
+        print(df)
         cc_attr = torch.from_numpy(np.array(df[["importance","oneway",'tunnel','lanes']].values,dtype=float)).long()
         edge_attr["cc_attr"] = cc_attr
         return edge_attr
