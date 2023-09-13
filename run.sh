@@ -2,14 +2,19 @@
 
 # https://github.com/iarai/NeurIPS2022-traffic4cast
 
-PATH=/usr/share/anaconda3/bin:.:$PATH
+ANACONDA=/ihdd/anaconda3
+LI2022=/home/ubuntu/li2022
+HOME=/ihdd/ubuntu
+DATA=$HOME/t4c22data
+PATH=$ANACONDA/bin:.:$PATH
 echo $PATH
 
-#if true; then
-if false; then
-  #conda env update -f environment.yaml
-  mkdir t4c22data
-  cd t4c22data
+if true; then
+#if false; then
+  conda env update -f environment.yaml
+  cd $HOME
+  mkdir $DATA
+  cd $DATA
   wget http://bigtmp.mathema-tech.com/data/MELBOURNE_2022.zip
   wget http://bigtmp.mathema-tech.com/data/T4C_INPUTS_2022.zip
   wget http://bigtmp.mathema-tech.com/data/T4C_INPUTS_ETA_2022.zip
@@ -25,14 +30,14 @@ fi
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/usr/share/anaconda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
+__conda_setup="$($ANACONDA'/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
 if [ $? -eq 0 ]; then
     eval "$__conda_setup"
 else
-    if [ -f "/usr/share/anaconda3/etc/profile.d/conda.sh" ]; then
-        . "/usr/share/anaconda3/etc/profile.d/conda.sh"
+    if [ -f "$ANACONDA/etc/profile.d/conda.sh" ]; then
+        . "$ANACONDA/etc/profile.d/conda.sh"
     else
-        export PATH="/usr/share/anaconda3/bin:$PATH"
+        export PATH="$ANACONDA/bin:$PATH"
     fi
 fi
 unset __conda_setup
@@ -40,8 +45,10 @@ unset __conda_setup
 
 #conda info --envs
 conda activate t4c22
-CUDA="cu115"
+CUDA="cu122"
 #CUDA="cu113"
+
+cd $LI2022
 
 if true; then
 #if false; then
@@ -51,11 +58,11 @@ if true; then
   echo prepare1
   #export -p  | grep PYTHON
   export PYTHONPATH="."
-  python t4c22/prepare_training_data_cc.py -d t4c22data > t4c22/tmp1.txt 2>&1
+  python t4c22/prepare_training_data_cc.py -d $DATA > t4c22/tmp1.txt 2>&1
   echo prepare2
-  python t4c22/prepare_training_data_eta.py -d t4c22data > t4c22/tmp2.txt 2>&1
+  python t4c22/prepare_training_data_eta.py -d $DATA > t4c22/tmp2.txt 2>&1
   echo prepare3
-  python t4c22/prepare_training_check_labels.py -d t4c22data > t4c22/tmp3.txt 2>&1
+  python t4c22/prepare_training_check_labels.py -d $DATA > t4c22/tmp3.txt 2>&1
   echo prepareend
 fi
 
@@ -66,7 +73,7 @@ fi
 #if false; then
 if true; then
   echo chkdata
-  python -u tool/chkdata.py t4c22data/train/melbourne/cluster_input/counters_2020-06-02.parquet
+  python -u tool/chkdata.py $DATA/train/melbourne/cluster_input/counters_2020-06-02.parquet
   echo chkdataend
 fi
 
