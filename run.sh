@@ -9,8 +9,8 @@ DATA=$HOME/t4c22data
 PATH=$ANACONDA/bin:.:$PATH
 echo $PATH
 
-if true; then
-#if false; then
+#if true; then
+if false; then
   conda env update -f environment.yaml
   cd $HOME
   mkdir $DATA
@@ -50,43 +50,50 @@ CUDA="cu122"
 
 cd $LI2022
 
-if true; then
-#if false; then
+#if true; then
+if false; then
   #python -m pip install -r install-extras-torch-geometric.txt -f https://data.pyg.org/whl/torch-1.11.0+${CUDA}.html
   python t4c22/misc/check_torch_geometric_setup.py
 
   echo prepare1
+  date
   #export -p  | grep PYTHON
   export PYTHONPATH="."
   python t4c22/prepare_training_data_cc.py -d $DATA > t4c22/tmp1.txt 2>&1
   echo prepare2
+  date
   python t4c22/prepare_training_data_eta.py -d $DATA > t4c22/tmp2.txt 2>&1
   echo prepare3
+  date
   python t4c22/prepare_training_check_labels.py -d $DATA > t4c22/tmp3.txt 2>&1
   echo prepareend
+  date
 fi
 
 #cd data
 #jupyter execute data_preprocess.ipynb
 
-
-#if false; then
-if true; then
-  echo chkdata
-  python -u tool/chkdata.py $DATA/train/melbourne/cluster_input/counters_2020-06-02.parquet
-  echo chkdataend
-fi
-
 if true; then
 #if false; then
   # screen run.sh
   echo cluster
+  date
   ip2p.sh model/cluster.ipynb > model/cluster.py
   cd model
   rm tmp.txt
   python -u cluster.py > tmp.txt 2>&1
-  echo done >> tmp.txt
+  echo clusterdone
+  date
   cd ..
+fi
+
+#if false; then
+if true; then
+  echo chkdata
+  date
+  python -u tool/chkdata.py $DATA/train/melbourne/cluster_input/counters_2020-06-02.parquet
+  echo chkdataend
+  date
 fi
 
 #if false; then
@@ -95,7 +102,11 @@ if true; then
   cd model
   rm tmp1.txt
   #python -u GNN_model_train.py
+  echo train
+  date
   python -u GNN_model_train.py > tmp1.txt 2>&1
+  echo test
+  date
   #python -u GNN_model_test.py >> tmp1.txt 2>&1
   #python -u submission_cc.py >> tmp1.txt 2>&1 
   #python -u submission_eta.py >> tmp1.txt 2>&1 
