@@ -52,7 +52,7 @@ cd $LI2022
 
 if true; then
 #if false; then
-  python -m pip install -r install-extras-torch-geometric.txt -f https://data.pyg.org/whl/torch-1.11.0+${CUDA}.html
+  #python -m pip install -r install-extras-torch-geometric.txt -f https://data.pyg.org/whl/torch-1.11.0+${CUDA}.html
   python t4c22/misc/check_torch_geometric_setup.py
 
   echo prepare1
