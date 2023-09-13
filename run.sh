@@ -9,8 +9,8 @@ DATA=$HOME/t4c22data
 PATH=$ANACONDA/bin:.:$PATH
 echo $PATH
 
-#if true; then
-if false; then
+if true; then
+#if false; then
   conda env update -f environment.yaml
   cd $HOME
   mkdir $DATA
@@ -50,8 +50,8 @@ CUDA="cu122"
 
 cd $LI2022
 
-#if true; then
-if false; then
+if true; then
+#if false; then
   #python -m pip install -r install-extras-torch-geometric.txt -f https://data.pyg.org/whl/torch-1.11.0+${CUDA}.html
   python t4c22/misc/check_torch_geometric_setup.py
 
