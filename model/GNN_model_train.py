@@ -76,6 +76,7 @@ class Edge_Attr(nn.Module):
     def __init__(self,num_edge_dim):
         super(Edge_Attr, self).__init__()
         for name, i , dim_in, dim_out in Edge_Attr.attr_dims:
+            #print("new embed",name,i,(dim_in,dim_out));
             self.add_module("attr-" + name, nn.Embedding(dim_in, dim_out))
         self.process_coords = torch.nn.Linear(20+1, 64)
 
@@ -85,13 +86,13 @@ class Edge_Attr(nn.Module):
         for name, i, dim_in, dim_out in Edge_Attr.attr_dims:
             embed = getattr(self, "attr-" + name)
             attr_t = cc_attr[:,:,i]
-            #pmax = np.max(list(set(attr_t.numpy().flatten())))
-            #attr_t = torch.where(attr_t < 0, np.abs(attr_t)+pmax,attr_t);
-            #print("dim",i,name,(dim_in,dim_out),attr_t.shape);
-            #print("embed",embed);
-            #print("attr",pmax,set(attr_t.numpy().flatten()));
+            # replace minus
+            npattr = attr_t.detach().cpu().numpy();
+            pmax = np.max(list(set(npattr.flatten())))
+            attr_t = torch.where(attr_t < 0, torch.abs(attr_t)+pmax,attr_t);
+            #print("embed",i,name,(dim_in,dim_out),attr_t.shape);
+            #print(" attr",set(attr_t.detach().cpu().numpy().flatten()));
             attr_t = embed(attr_t)
-            #print(" ",name,"ok");
             em_list.append(attr_t)
         em_list.append(num_attr)
         em_list.append(y_init)
@@ -214,7 +215,6 @@ class TrfEdgeNet(torch.nn.Module):
         self.embedding_2 = nn.Linear(hidden_dim//2,hidden_dim)
 
     def forward(self, data, edge_index):
-        #print("forward mem",mem.percent,"%");
         edge_attr_all = self.edge_attr(data["num_attr"], data["cc_attr"], data["y_init"])
         x = self.MLP(data["x"])
         x = torch.cat([x,edge_attr_all],dim=-1)
@@ -374,7 +374,7 @@ if __name__ == "__main__":
         city_class_weights = torch.tensor(get_weights_from_class_fractions([city_class_fractions[c] for c in ["green", "yellow", "red"]])).float()
         city_vol_weights = torch.tensor(get_weights_from_class_fractions(city_attr["volcc_fractions"])).float()
 
-        batch_size =1 
+        batch_size = 1
         eval_steps = 1
         epochs = 20
         runs = 9

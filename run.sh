@@ -106,8 +106,8 @@ if false; then
   cd ..
 fi
 
-#if false; then
-if true; then
+if false; then
+#if true; then
   echo chkdata
   date
   python -u tool/chkdata.py $DATA/train/melbourne/cluster_input/counters_2020-06-02.parquet
@@ -122,7 +122,7 @@ if true; then
   echo model
   cd model
   rm tmp1.txt
-  python -u GNN_model_train.py; exit
+  #python -u GNN_model_train.py; exit
   echo train
   date
   python -u GNN_model_train.py > tmp1.txt 2>&1
