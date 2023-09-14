@@ -43,7 +43,7 @@ from model.utils import to_var, weight_init
 import psutil
 import time
 mem=psutil.virtual_memory()
-NWORKER=9;
+NWORKER=4; # g4dn T4
 
 class GNN_Layer(MessagePassing):
    
@@ -81,7 +81,7 @@ class Edge_Attr(nn.Module):
 
     def forward(self, num_attr, cc_attr,y_init):
         em_list = []
-        print("forward mem",mem.percent,"%");
+        #print("forward mem",mem.percent,"%");
         for name, i, dim_in, dim_out in Edge_Attr.attr_dims:
             embed = getattr(self, "attr-" + name)
             attr_t = cc_attr[:,:,i]
@@ -214,6 +214,7 @@ class TrfEdgeNet(torch.nn.Module):
         self.embedding_2 = nn.Linear(hidden_dim//2,hidden_dim)
 
     def forward(self, data, edge_index):
+        #print("forward mem",mem.percent,"%");
         edge_attr_all = self.edge_attr(data["num_attr"], data["cc_attr"], data["y_init"])
         x = self.MLP(data["x"])
         x = torch.cat([x,edge_attr_all],dim=-1)
