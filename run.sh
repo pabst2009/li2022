@@ -75,15 +75,25 @@ if false; then
   echo prepare3
   date
   python t4c22/prepare_training_check_labels.py -d $DATA > t4c22/tmp3.txt 2>&1
-  echo prepareend
+
+  echo preproc
   date
+fi
+
+if true; then
+  ip2p.sh data/data_preprocess.ipynb > data/data_preprocess.py
+  cd data
+  rm tmp.txt
+  python -u data_preprocess.py > tmp.txt 2>&1
+  echo clusterdone
+  cd ..
 fi
 
 #cd data
 #jupyter execute data_preprocess.ipynb
 
-#if true; then
-if false; then
+if true; then
+#if false; then
   # screen run.sh
   echo cluster
   date
