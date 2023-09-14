@@ -9,8 +9,8 @@ DATA=$HOME/t4c22data
 PATH=$ANACONDA/bin:.:$PATH
 echo $PATH
 
-if true; then
-#if false; then
+#if true; then
+if false; then
   conda env update -f environment.yaml
   cd $HOME
   mkdir $DATA
@@ -50,8 +50,16 @@ CUDA="cu122"
 
 cd $LI2022
 
-if true; then
-#if false; then
+if false; then
+#if true; then
+  python -m pip install -U pandas==1.5.3 
+  python -c 'import pandas; print(pandas.__version__)'
+  python -c 'import pyarrow; print(pyarrow.__version__)'
+  exit
+fi
+
+#if true; then
+if false; then
   #python -m pip install -r install-extras-torch-geometric.txt -f https://data.pyg.org/whl/torch-1.11.0+${CUDA}.html
   python t4c22/misc/check_torch_geometric_setup.py
 
@@ -59,6 +67,7 @@ if true; then
   date
   #export -p  | grep PYTHON
   export PYTHONPATH="."
+  rm t4c22/tmp*.txt
   python t4c22/prepare_training_data_cc.py -d $DATA > t4c22/tmp1.txt 2>&1
   echo prepare2
   date
@@ -73,8 +82,8 @@ fi
 #cd data
 #jupyter execute data_preprocess.ipynb
 
-if true; then
-#if false; then
+#if true; then
+if false; then
   # screen run.sh
   echo cluster
   date
@@ -87,8 +96,8 @@ if true; then
   cd ..
 fi
 
-#if false; then
-if true; then
+if false; then
+#if true; then
   echo chkdata
   date
   python -u tool/chkdata.py $DATA/train/melbourne/cluster_input/counters_2020-06-02.parquet
@@ -98,10 +107,12 @@ fi
 
 #if false; then
 if true; then
+  python -u tool/chkdata.py $DATA/road_graph/melbourne/road_graph_edges.parquet 'importance oneway tunnel lanes'
+  exit
   echo model
   cd model
   rm tmp1.txt
-  #python -u GNN_model_train.py
+  python -u GNN_model_train.py; exit
   echo train
   date
   python -u GNN_model_train.py > tmp1.txt 2>&1
