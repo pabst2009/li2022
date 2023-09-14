@@ -75,25 +75,25 @@ if false; then
   echo prepare3
   date
   python t4c22/prepare_training_check_labels.py -d $DATA > t4c22/tmp3.txt 2>&1
-
-  echo preproc
+  echo preparedone
   date
 fi
 
-if true; then
+if false; then
+#if true; then
   ip2p.sh data/data_preprocess.ipynb > data/data_preprocess.py
   cd data
   rm tmp.txt
+  echo preproc
+  date
   python -u data_preprocess.py > tmp.txt 2>&1
-  echo clusterdone
+  echo preprocdone
+  date
   cd ..
 fi
 
-#cd data
-#jupyter execute data_preprocess.ipynb
-
-if true; then
-#if false; then
+#if true; then
+if false; then
   # screen run.sh
   echo cluster
   date
@@ -106,19 +106,19 @@ if true; then
   cd ..
 fi
 
-if false; then
-#if true; then
+#if false; then
+if true; then
   echo chkdata
   date
   python -u tool/chkdata.py $DATA/train/melbourne/cluster_input/counters_2020-06-02.parquet
+  echo road_edge
+  python -u tool/chkdata.py $DATA/road_graph/melbourne/road_graph_edges.parquet 'importance oneway tunnel lanes'
   echo chkdataend
   date
 fi
 
 #if false; then
 if true; then
-  python -u tool/chkdata.py $DATA/road_graph/melbourne/road_graph_edges.parquet 'importance oneway tunnel lanes'
-  exit
   echo model
   cd model
   rm tmp1.txt
