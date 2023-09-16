@@ -45,7 +45,6 @@ import time
 import wandb
 wandb.login() # only once
 wandb.init(project="li2022")
-wc=wandb.config;
 
 mem=psutil.virtual_memory()
 NWORKER=4; # g4dn T4
@@ -347,6 +346,12 @@ def test(model, test_dataset, batch_size, device):
     return df
 
 if __name__ == "__main__":
+    wc=wandb.config;
+    #epochs = 20; runs = 9
+    batch_size =1
+    epochs = 3; runs =2; 
+    wc.epochs=1; wc.runs=1; wc.filter=1; # 0:none, 1:10days, 2:months
+    
     print("start model train");
     t4c_apply_basic_logging_config(loglevel="DEBUG")
     # load BASEDIR from file, change to your data root
@@ -389,11 +394,7 @@ if __name__ == "__main__":
 
 
         #batch_size =2 # memory error in g4dn
-        batch_size =1
         eval_steps = 1
-        #epochs = 20; runs = 9
-        epochs = 3; runs =2; 
-        wc.epochs=1; wc.runs=1; wc.filter=1; # 0:none, 1:10days, 2:months
         gstart = time.time();
         dropout = 0.05
         num_edge_classes = 7
