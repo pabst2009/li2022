@@ -7,7 +7,7 @@ LI2022=/home/ubuntu/li2022
 HOME=/ihdd/ubuntu
 DATA=$HOME/t4c22data
 PATH=$ANACONDA/bin:.:$PATH
-PREP=true
+PREP=false
 echo $PATH
 
 
@@ -77,9 +77,9 @@ if $PREP; then
   python t4c22/prepare_training_data_cc.py -d $DATA > t4c22/tmp1.txt 2>&1
   echo prepare2
   date
-  python t4c22/prepare_training_data_eta.py -d $DATA > t4c22/tmp2.txt 2>&1
-  echo prepare3
-  date
+  #python t4c22/prepare_training_data_eta.py -d $DATA > t4c22/tmp2.txt 2>&1
+  #echo prepare3
+  #date
   python t4c22/prepare_training_check_labels.py -d $DATA > t4c22/tmp3.txt 2>&1
   echo preparedone
   date
@@ -123,11 +123,11 @@ if true; then
   echo model
   cd model
   rm tmptrain.txt
-  python -u GNN_model_test.py
+  #python -u GNN_model_test.py
   #date; python -u GNN_model_train.py; date; exit
   echo train
   date
-  #python -u GNN_model_train.py > tmptrain.txt 2>&1
+  python -u GNN_model_train.py > tmptrain.txt 2>&1
   echo test
   date
   #python -u GNN_model_test.py >> tmptest.txt 2>&1

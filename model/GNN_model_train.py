@@ -91,8 +91,8 @@ class Edge_Attr(nn.Module):
               npattr = attr_t.detach().cpu().numpy();
               pmax = np.max(list(set(npattr.flatten())))
               attr_t = torch.where(attr_t < 0, torch.abs(attr_t)+pmax,attr_t);
-            print("embed",i,name,(dim_in,dim_out),attr_t.shape);
-            print(" attr",set(attr_t.detach().cpu().numpy().flatten()));
+            #print("embed",i,name,(dim_in,dim_out),attr_t.shape);
+            #print(" attr",set(attr_t.detach().cpu().numpy().flatten()));
             attr_t = embed(attr_t)
             em_list.append(attr_t)
         em_list.append(num_attr)
@@ -359,8 +359,8 @@ if __name__ == "__main__":
         print("city",city);
         vaild_score = []
         print("mem",mem.percent,"%");
-        #dataset = T4c22Dataset(root=BASEDIR, city=city, split=split, cachedir=Path("../data/tmp"),day_t_filter=day_t_filter_10days)
-        dataset = T4c22Dataset(root=BASEDIR, city=city, split=split, cachedir=Path(str(BASEDIR)+"/tmp"),day_t_filter=day_t_filter_months)
+        #dataset = T4c22Dataset(root=BASEDIR, city=city, split=split, cachedir=Path(str(BASEDIR)+"/tmp"),day_t_filter=day_t_filter_months)
+        dataset = T4c22Dataset(root=BASEDIR, city=city, split=split, cachedir=Path(str(BASEDIR)+"/tmp"),day_t_filter=day_t_filter_10days)
         #dataset = T4c22Dataset(root=BASEDIR, city=city, split=split, cachedir=Path("../data/tmp"))
         spl = int(((0.8 * len(dataset)) // 2) * 2)
         print("dataset",dataset);
