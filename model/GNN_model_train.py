@@ -45,6 +45,7 @@ import time
 import wandb
 wandb.login() # only once
 wandb.init(project="li2022")
+wc=wandb.config;
 
 mem=psutil.virtual_memory()
 NWORKER=4; # g4dn T4
@@ -386,7 +387,6 @@ if __name__ == "__main__":
         city_class_weights = torch.tensor(get_weights_from_class_fractions([city_class_fractions[c] for c in ["green", "yellow", "red"]])).float()
         city_vol_weights = torch.tensor(get_weights_from_class_fractions(city_attr["volcc_fractions"])).float()
 
-        wc=wandb.config;
 
         #batch_size =2 # memory error in g4dn
         batch_size =1
