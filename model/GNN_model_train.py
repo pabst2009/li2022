@@ -366,7 +366,8 @@ if __name__ == "__main__":
         #batch_size =2 # memory error in g4dn
         batch_size =1
         #epochs = 20; runs = 9
-        epochs=3; runs=2; filt=1; # 0:none, 1:10days, 2:months
+        #epochs=3; runs=2; filt=0; # 0:none, 1:10days, 2:months
+        epochs,runs,filt=[int(e) for e in sys.argv[1:]];
         wandb.init(project="li2022",name="epochs:%d runs:%d filter:%d %s"%(epochs,runs,filt,city))
         wc=wandb.config;
         wc.epochs=epochs; wc.runs=runs; wc.filter=filt;
@@ -383,7 +384,7 @@ if __name__ == "__main__":
           dataset = T4c22Dataset(root=BASEDIR, city=city, split=split, cachedir=Path(str(BASEDIR)+"/tmp"))
         spl = int(((0.8 * len(dataset)) // 2) * 2)
         print("dataset",dataset);
-        print("n",len(dataset),"spl",spl);
+        print("n",len(dataset),"spl",spl); 
         train_dataset, val_dataset = torch.utils.data.random_split(dataset, [spl, len(dataset) - spl])
        
         print("train dataset",train_dataset);
@@ -470,6 +471,6 @@ if __name__ == "__main__":
         vaild_scores[city] = best_score 
         print(vaild_score)
     print(vaild_scores)
-    wandb.log({"best_score":vaild_scores['melbourne'],'elps':time.time()-gstart})
+    wandb.log({"best_score":vaild_scores['melbourne'],'elps':time.time()-gstart,"ndata":len(dataset)})
     wandb.finish()
     print("train end"); 
