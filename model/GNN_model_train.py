@@ -44,7 +44,6 @@ import psutil
 import time
 import wandb
 wandb.login() # only once
-wandb.init(project="li2022")
 
 mem=psutil.virtual_memory()
 NWORKER=4; # g4dn T4
@@ -346,13 +345,6 @@ def test(model, test_dataset, batch_size, device):
     return df
 
 if __name__ == "__main__":
-    wc=wandb.config;
-    #epochs = 20; runs = 9
-    batch_size =1
-    epochs = 3; runs =2; 
-    wc.epochs=3; wc.runs=1; wc.filter=1; # 0:none, 1:10days, 2:months
-    
-    print("start model train");
     t4c_apply_basic_logging_config(loglevel="DEBUG")
     # load BASEDIR from file, change to your data root
     BASEDIR = load_basedir(fn="t4c22_config.json", pkg=t4c22)
@@ -370,6 +362,16 @@ if __name__ == "__main__":
                     "melbourne":{"nodes":49510,"edges":94871,"counters":3982,"volcc_fractions":[0.495,0.215,0.290]},}
     for city  in cities:
         print("city",city);
+
+        #batch_size =2 # memory error in g4dn
+        batch_size =1
+        #epochs = 20; runs = 9
+        epochs=3; runs=2; filt=1; # 0:none, 1:10days, 2:months
+        wandb.init(project="li2022",name="epochs:%d runs:%d filter:%d %s"%(epochs,runs,filt,city))
+        wc=wandb.config;
+        wc.epochs=epochs; wc.runs=runs; wc.filter=filt;
+        print(wc);
+
         vaild_score = []
         print("mem",mem.percent,"%");
         dataset=None;
@@ -393,7 +395,6 @@ if __name__ == "__main__":
         city_vol_weights = torch.tensor(get_weights_from_class_fractions(city_attr["volcc_fractions"])).float()
 
 
-        #batch_size =2 # memory error in g4dn
         eval_steps = 1
         gstart = time.time();
         dropout = 0.05
@@ -469,5 +470,6 @@ if __name__ == "__main__":
         vaild_scores[city] = best_score 
         print(vaild_score)
     print(vaild_scores)
+    wandb.log({"best_score":vaild_scores['melbourne'],'elps':time.time()-gstart})
     wandb.finish()
     print("train end"); 
