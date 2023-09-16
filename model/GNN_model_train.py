@@ -43,7 +43,7 @@ from model.utils import to_var, weight_init
 import psutil
 import time
 import wandb
-os.environ["WANDB_DISABLED"]="true"
+#os.environ["WANDB_DISABLED"]="true"
 wandb.login() # only once
 
 mem=psutil.virtual_memory()
