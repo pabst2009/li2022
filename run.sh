@@ -124,7 +124,7 @@ if true; then
   cd model
   rm tmptrain.txt
   #python -u GNN_model_test.py
-  date; python -u GNN_model_train.py; date; exit
+  #date; python -u GNN_model_train.py; date; exit
   echo train
   date
   python -u GNN_model_train.py > tmptrain.txt 2>&1
