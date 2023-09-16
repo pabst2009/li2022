@@ -235,6 +235,7 @@ def train(model, dataset, optimizer, batch_size, device):
     optimizer.zero_grad()
     loss_f1 = torch.nn.CrossEntropyLoss(weight=city_class_weights, ignore_index=-1)
     loss_f2 = torch.nn.CrossEntropyLoss(weight=city_vol_weights, ignore_index=-1)
+    start = time.time();
     for i,data in enumerate(tqdm.tqdm(
         #torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=9),
         torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=NWORKER),
@@ -261,7 +262,6 @@ def train(model, dataset, optimizer, batch_size, device):
         loss.backward()
 
         #print("step start mem",mem.percent,"%");
-        start = time.time();
         optimizer.step()
         #print("step end mem",mem.percent,"%, took",time.time()-start);
         optimizer.zero_grad()
@@ -272,7 +272,7 @@ def train(model, dataset, optimizer, batch_size, device):
         #print("train i",i," end mem",mem.percent,"%");
     lens = len(dataset) // batch_size
     #print("train end");
-    print("train_loss:{:.5f} loss_cc: {:.5f} loss_speed: {:.5f} loss_vol:{:.5f}\n".format(losses/lens,losses2/lens,losses1/lens,losses3/lens))
+    print("train_loss:{:.5f} loss_cc: {:.5f} loss_speed: {:.5f} loss_vol:{:.5f} lelps:{:d} gelps:{:d}\n".format(losses/lens,losses2/lens,losses1/lens,losses3/lens,time.time()-start,time.time()-gstart))
     return losses/lens
 
 
@@ -374,10 +374,11 @@ if __name__ == "__main__":
         city_class_weights = torch.tensor(get_weights_from_class_fractions([city_class_fractions[c] for c in ["green", "yellow", "red"]])).float()
         city_vol_weights = torch.tensor(get_weights_from_class_fractions(city_attr["volcc_fractions"])).float()
 
-        batch_size = 1
+        batch_size =2 
         eval_steps = 1
-        epochs = 20
-        runs = 9
+        #epochs = 20; runs = 9
+        epochs = 3; runs =2; 
+        gstart = time.time();
         dropout = 0.05
         num_edge_classes = 7
         num_node_features = 4
