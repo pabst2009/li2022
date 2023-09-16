@@ -281,6 +281,7 @@ def train(model, dataset, optimizer, batch_size, device):
 def vaild(model, validation_dataset, batch_size, device):
     
     model.eval()
+    start=time.time()
 
     losses = 0
     losses1 = 0
@@ -316,7 +317,7 @@ def vaild(model, validation_dataset, batch_size, device):
 
 
     lens = len(validation_dataset)//batch_size
-    print("valid_loss:{:.5f} loss_cc: {:.5f} loss_speed: {:.5f} loss_vol:{:.5f}\n".format(losses/lens,losses2/lens,losses1/lens,losses3/lens))
+    print("valid_loss:{:.5f} loss_cc: {:.5f} loss_speed: {:.5f} loss_vol:{:.5f} lelps:{:d} gelps:{:d}\n".format(losses/lens,losses2/lens,losses1/lens,losses3/lens,int(time.time()-start),int(time.time()-gstart)))
     return losses/lens 
 @torch.no_grad()
 def test(model, test_dataset, batch_size, device):
@@ -359,8 +360,8 @@ if __name__ == "__main__":
         print("city",city);
         vaild_score = []
         print("mem",mem.percent,"%");
-        #dataset = T4c22Dataset(root=BASEDIR, city=city, split=split, cachedir=Path(str(BASEDIR)+"/tmp"),day_t_filter=day_t_filter_months)
-        dataset = T4c22Dataset(root=BASEDIR, city=city, split=split, cachedir=Path(str(BASEDIR)+"/tmp"),day_t_filter=day_t_filter_10days)
+        dataset = T4c22Dataset(root=BASEDIR, city=city, split=split, cachedir=Path(str(BASEDIR)+"/tmp"),day_t_filter=day_t_filter_months)
+        #dataset = T4c22Dataset(root=BASEDIR, city=city, split=split, cachedir=Path(str(BASEDIR)+"/tmp"),day_t_filter=day_t_filter_10days)
         #dataset = T4c22Dataset(root=BASEDIR, city=city, split=split, cachedir=Path("../data/tmp"))
         spl = int(((0.8 * len(dataset)) // 2) * 2)
         print("dataset",dataset);
