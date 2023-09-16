@@ -41,6 +41,7 @@ from t4c22.misc.parquet_helpers import write_df_to_parquet
 import zipfile
 from glob import glob
 from model.utils import to_var, weight_init
+NWORKER=4
 
 class GNN_Layer(MessagePassing):
     """
@@ -232,7 +233,7 @@ def train(model, dataset, optimizer, batch_size, device):
     loss_f1 = torch.nn.CrossEntropyLoss(weight=city_class_weights, ignore_index=-1)
     loss_f2 = torch.nn.CrossEntropyLoss(weight=city_vol_weights, ignore_index=-1)
     for data in tqdm.tqdm(
-        torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=9),
+        torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=NWORKER),
         "train",
         total=len(dataset) // batch_size,
     ):
@@ -276,7 +277,7 @@ def vaild(model, validation_dataset, batch_size, device):
 
     for data in tqdm.tqdm(
 
-        torch.utils.data.DataLoader(validation_dataset, batch_size=batch_size, shuffle=False, num_workers=9),
+        torch.utils.data.DataLoader(validation_dataset, batch_size=batch_size, shuffle=False, num_workers=NWORKER),
         "vaild",
         total=len(validation_dataset) // batch_size
         ):
@@ -307,7 +308,7 @@ def test_cc(model, test_dataset, batch_size, device):
     dfs = []
     idx = 0
     model.eval()
-    for data in tqdm.tqdm(torch.utils.data.DataLoader(test_dataset, batch_size=batch_size, shuffle=False, num_workers=9),
+    for data in tqdm.tqdm(torch.utils.data.DataLoader(test_dataset, batch_size=batch_size, shuffle=False, num_workers=NWORKER),
                                 "test",
                                 total=len(test_dataset) // batch_size):
         # data.x = data.x.nan_to_num(-1)
@@ -326,7 +327,7 @@ def test_cc(model, test_dataset, batch_size, device):
 def test_eta(model, test_dataset, batch_size, device):
     dfs = []
     idx = 0
-    for data in tqdm.tqdm(torch.utils.data.DataLoader(test_dataset, batch_size=batch_size, shuffle=False, num_workers=9),
+    for data in tqdm.tqdm(torch.utils.data.DataLoader(test_dataset, batch_size=batch_size, shuffle=False, num_workers=NWORKER),
                                 "test",
                                 total=len(test_dataset) // batch_size):
 
@@ -377,17 +378,14 @@ if __name__ == "__main__":
 
         test_dataset = T4c22Dataset(root=BASEDIR, city=city, split=split, cachedir=Path("../data/tmp"))
         city_attr = city_attrs[city]
-        print(1);
         
         city_class_fractions = class_fractions[city]
         city_class_weights = torch.tensor(get_weights_from_class_fractions([city_class_fractions[c] for c in ["green", "yellow", "red"]])).float()
         city_vol_weights = torch.tensor(get_weights_from_class_fractions(city_attr["volcc_fractions"])).float()
 
-        print(2);
         batch_size = 1
         eval_steps = 1
-        epochs = 20
-        runs = 9
+        epochs = 20; runs = 9 # not in use
         dropout = 0.05
         num_edge_classes = 7
         num_node_features = 4
@@ -398,6 +396,7 @@ if __name__ == "__main__":
         hidden_dim = 64
         os.environ['CUDA_VISIBLE_DEVICES']= '0' 
         device = "cuda" if torch.cuda.is_available() else "cpu"
+        print("device",device);
 
         device = torch.device(device)
 
@@ -405,10 +404,8 @@ if __name__ == "__main__":
         city_vol_weights = city_vol_weights.to(device)
         train_losses = defaultdict(lambda: [])
         val_losses = defaultdict(lambda: -1)
-        print(3);
 
         new_edge_index  = np.load("../data/road_graph/{}/new_edge_index.npy".format(city))
-        print(4);
         new_edge_index = torch.tensor(new_edge_index, dtype=torch.long)
         edge_indexs = []
         for i in range(batch_size):

@@ -57,15 +57,9 @@ CUDA="cu122"
 
 cd $LI2022
 
-if false; then
-#if true; then
-  python -m pip install -U pandas==1.5.3 
-  python -c 'import pandas; print(pandas.__version__)'
-  python -c 'import pyarrow; print(pyarrow.__version__)'
-  exit
-fi
-
 if $PREP; then
+  python -m pip install wandb
+  # error
   #python -m pip install -r install-extras-torch-geometric.txt -f https://data.pyg.org/whl/torch-1.11.0+${CUDA}.html
   python t4c22/misc/check_torch_geometric_setup.py
 
@@ -122,19 +116,20 @@ fi
 if true; then
   echo model
   cd model
-  rm tmptrain.txt
-  #python -u GNN_model_test.py
-  #date; python -u GNN_model_train.py; date; exit
+  rm tmptrain.txt tmptest.txt tmpsub.txt
+  date; python -u GNN_model_train.py; date; exit
+  #date; python -u GNN_model_test.py; date; exit
   echo train
   date
   python -u GNN_model_train.py > tmptrain.txt 2>&1
   echo test
   date
-  #python -u GNN_model_test.py >> tmptest.txt 2>&1
-  #python -u submission_cc.py >> tmp1.txt 2>&1 
-  #python -u submission_eta.py >> tmp1.txt 2>&1 
-  echo done >> tmp1.txt
+  python -u GNN_model_test.py >> tmptest.txt 2>&1
+  python -u submission_cc.py > tmpsub.txt 2>&1 
+  #python -u submission_eta.py >> tmpsub.txt 2>&1 
+  echo done
   cd ..
+  python -u tool/chkdata.py $DATA/submission/ensemble_cc_result/melbourne/labels/cc_labels_test.parquet
   exit
 fi
 
