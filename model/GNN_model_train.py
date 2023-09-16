@@ -273,7 +273,7 @@ def train(model, dataset, optimizer, batch_size, device):
         #print("train i",i," end mem",mem.percent,"%");
     lens = len(dataset) // batch_size
     #print("train end");
-    print("train_loss:{:.5f} loss_cc: {:.5f} loss_speed: {:.5f} loss_vol:{:.5f} lelps:{:d} gelps:{:d}\n".format(losses/lens,losses2/lens,losses1/lens,losses3/lens,time.time()-start,time.time()-gstart))
+    print("train_loss:{:.5f} loss_cc: {:.5f} loss_speed: {:.5f} loss_vol:{:.5f} lelps:{:d} gelps:{:d}\n".format(losses/lens,losses2/lens,losses1/lens,losses3/lens,int(time.time()-start),int(time.time()-gstart)))
     return losses/lens
 
 
