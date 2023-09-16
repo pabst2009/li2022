@@ -30,7 +30,7 @@ from t4c22.metric.masked_crossentropy import get_weights_from_class_fractions
 from t4c22.misc.t4c22_logging import t4c_apply_basic_logging_config
 from t4c22.t4c22_config import class_fractions
 from t4c22.t4c22_config import load_basedir
-from t4c22.t4c22_config import day_t_filter_10days,day_t_filter_months
+from t4c22.t4c22_config import day_t_filter_10days,day_t_filter_months,day_t_filter_2months
 from t4c22.dataloading.t4c22_dataset import T4c22Dataset
 from t4c22.plotting.plot_congestion_classification import plot_segment_classifications_simple
 from t4c22.misc.notebook_helpers import restartkernel  # noqa:F401
@@ -367,7 +367,7 @@ if __name__ == "__main__":
         #batch_size =2 # memory error in g4dn
         batch_size =1
         #epochs = 20; runs = 9
-        #epochs=3; runs=2; filt=0; # 0:none, 1:10days, 2:months
+        #epochs=3; runs=2; filt=0; # 0:none, 1:10days, 2:months,3:3months
         epochs,runs,filt=[int(e) for e in sys.argv[1:]];
         wandb.init(project="li2022",name="epochs:%d runs:%d filter:%d %s"%(epochs,runs,filt,city))
         wc=wandb.config;
@@ -381,6 +381,8 @@ if __name__ == "__main__":
           dataset = T4c22Dataset(root=BASEDIR, city=city, split=split, cachedir=Path(str(BASEDIR)+"/tmp"),day_t_filter=day_t_filter_10days)
         elif wc.filter==2:
           dataset = T4c22Dataset(root=BASEDIR, city=city, split=split, cachedir=Path(str(BASEDIR)+"/tmp"),day_t_filter=day_t_filter_months)
+        elif wc.filter==3:
+          dataset = T4c22Dataset(root=BASEDIR, city=city, split=split, cachedir=Path(str(BASEDIR)+"/tmp"),day_t_filter=day_t_filter_2months)
         else:
           dataset = T4c22Dataset(root=BASEDIR, city=city, split=split, cachedir=Path(str(BASEDIR)+"/tmp"))
         spl = int(((0.8 * len(dataset)) // 2) * 2)

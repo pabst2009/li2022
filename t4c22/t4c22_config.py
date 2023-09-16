@@ -83,6 +83,7 @@ day_t_filter_weekdays_daytime_only: DAY_T_FILTER = partial(day_t_filter, t_white
 
 day_t_filter_10days: DAY_T_FILTER = partial(day_t_filter, day_whitelist=['2020-06-01','2020-06-02','2020-06-04'], t_whitelist=set(range(6 * 4, 22 * 4)), weekday_whitelist=set(range(7)))
 day_t_filter_months: DAY_T_FILTER = partial(day_t_filter, month_whitelist=['2020-06'], t_whitelist=set(range(6 * 4, 22 * 4)), weekday_whitelist=set(range(7)))
+day_t_filter_2months: DAY_T_FILTER = partial(day_t_filter, month_whitelist=['2020-06','2020-07'], t_whitelist=set(range(6 * 4, 22 * 4)), weekday_whitelist=set(range(7)))
 #day_t_filter_10days: DAY_T_FILTER = partial(day_t_filter, day_whitelist=['2020-06-01','2020-06-02','2020-06-04','2020-06-05','2020-06-06','2020-06-07'])
 
 def day_t_filter_to_df_filter(df: pd.DataFrame, filter: DAY_T_FILTER, tmp_column_name="_included") -> pd.DataFrame:
