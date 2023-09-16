@@ -350,7 +350,7 @@ if __name__ == "__main__":
     #epochs = 20; runs = 9
     batch_size =1
     epochs = 3; runs =2; 
-    wc.epochs=1; wc.runs=1; wc.filter=1; # 0:none, 1:10days, 2:months
+    wc.epochs=3; wc.runs=1; wc.filter=1; # 0:none, 1:10days, 2:months
     
     print("start model train");
     t4c_apply_basic_logging_config(loglevel="DEBUG")
