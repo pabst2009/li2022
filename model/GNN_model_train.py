@@ -375,7 +375,8 @@ if __name__ == "__main__":
         city_class_weights = torch.tensor(get_weights_from_class_fractions([city_class_fractions[c] for c in ["green", "yellow", "red"]])).float()
         city_vol_weights = torch.tensor(get_weights_from_class_fractions(city_attr["volcc_fractions"])).float()
 
-        batch_size =2 
+        #batch_size =2 # memory error in g4dn
+        batch_size =1
         eval_steps = 1
         #epochs = 20; runs = 9
         epochs = 3; runs =2; 
