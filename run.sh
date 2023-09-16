@@ -12,8 +12,8 @@ echo $PATH
 
 
 # initial & ihdd
-#if true; then
-if false; then
+#if [ $PY -o $PREP ] ; then
+if false ; then
   conda env update -f environment.yaml
   cd $HOME
 fi
@@ -57,8 +57,12 @@ CUDA="cu122"
 
 cd $LI2022
 
-if $PREP; then
+#if [ $PY -o $PREP ] ; then
+if false ; then
   python -m pip install wandb
+fi
+
+if $PREP; then
   # error
   #python -m pip install -r install-extras-torch-geometric.txt -f https://data.pyg.org/whl/torch-1.11.0+${CUDA}.html
   python t4c22/misc/check_torch_geometric_setup.py
@@ -112,16 +116,17 @@ if $PREP; then
   date
 fi
 
+
 #if false; then
 if true; then
   echo model
   cd model
   rm tmptrain.txt tmptest.txt tmpsub.txt
-  #date; python -u GNN_model_train.py 3 1 1; date; exit
+  date; python -u GNN_model_train.py 1 1 1; date; exit
   #date; python -u GNN_model_test.py; date; exit
   echo train
   date
-  python -u GNN_model_train.py 3 1 3 > tmptrain.txt 2>&1
+  python -u GNN_model_train.py 1 1 1 > tmptrain.txt 2>&1
   echo test
   date
   #python -u GNN_model_test.py >> tmptest.txt 2>&1

@@ -42,6 +42,8 @@ import zipfile
 from model.utils import to_var, weight_init
 import psutil
 import time
+import subprocess
+import json
 import wandb
 #os.environ["WANDB_DISABLED"]="true"
 wandb.login() # only once
@@ -230,6 +232,29 @@ class TrfEdgeNet(torch.nn.Module):
         x = self.embedding_2(x)
         return  self.predictor(x.reshape(b,n,-1))
 
+DEFAULT_ATTRIBUTES = (
+    'count',
+    'pci.device',
+    'index',
+    'uuid',
+    'name',
+    'timestamp',
+    'memory.total',
+    'memory.free',
+    'memory.used',
+    'utilization.gpu',
+    'utilization.memory'
+)
+
+def get_gpu_info(nvidia_smi_path='nvidia-smi', keys=DEFAULT_ATTRIBUTES, no_units=True):
+    nu_opt = '' if not no_units else ',nounits'
+    cmd = '%s --query-gpu=%s --format=csv,noheader%s' % (nvidia_smi_path, ','.join(keys), nu_opt)
+    output = subprocess.check_output(cmd, shell=True)
+    lines = output.decode().split('\n')
+    lines = [ line.strip() for line in lines if line.strip() != '' ]
+
+    return [ { k: v for k, v in zip(keys, line.split(', ')) } for line in lines ]
+
 
 def train(model, dataset, optimizer, batch_size, device):
     model.train()
@@ -346,6 +371,17 @@ def test(model, test_dataset, batch_size, device):
     return df
 
 if __name__ == "__main__":
+    os.environ['CUDA_VISIBLE_DEVICES']= '0' 
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    print("device",device);
+    device = torch.device(device)
+    gpu=torch.cuda.get_device_name()
+    spec={'Tesla T4':(2560,16)}
+    gpucore,gpumem=spec[gpu]
+    print(gpu,(gpucore,gpumem));
+    #gpucap=torch.cuda.get_device_capability()
+    #print(get_gpu_info())
+
     t4c_apply_basic_logging_config(loglevel="DEBUG")
     # load BASEDIR from file, change to your data root
     BASEDIR = load_basedir(fn="t4c22_config.json", pkg=t4c22)
@@ -409,11 +445,6 @@ if __name__ == "__main__":
         mlp_num_layers = 3
         trf_hidden_dim = 32
         hidden_dim = 64
-        os.environ['CUDA_VISIBLE_DEVICES']= '0' 
-        device = "cuda" if torch.cuda.is_available() else "cpu"
-        print("device",device);
-
-        device = torch.device(device)
 
         city_class_weights = city_class_weights.to(device)
         city_vol_weights = city_vol_weights.to(device)
@@ -474,6 +505,6 @@ if __name__ == "__main__":
         vaild_scores[city] = best_score 
         print(vaild_score)
     print(vaild_scores)
-    wandb.log({"best_score":vaild_scores['melbourne'],'elps':time.time()-gstart,"ndata":len(dataset)})
+    wandb.log({"core":gpucore,"mem":gpumem,"best_score":vaild_scores['melbourne'],'elps':time.time()-gstart,"ndata":len(dataset)})
     wandb.finish()
     print("train end"); 
