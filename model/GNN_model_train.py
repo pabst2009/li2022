@@ -87,11 +87,12 @@ class Edge_Attr(nn.Module):
             embed = getattr(self, "attr-" + name)
             attr_t = cc_attr[:,:,i]
             # replace minus
-            npattr = attr_t.detach().cpu().numpy();
-            pmax = np.max(list(set(npattr.flatten())))
-            attr_t = torch.where(attr_t < 0, torch.abs(attr_t)+pmax,attr_t);
-            #print("embed",i,name,(dim_in,dim_out),attr_t.shape);
-            #print(" attr",set(attr_t.detach().cpu().numpy().flatten()));
+            if 0:
+              npattr = attr_t.detach().cpu().numpy();
+              pmax = np.max(list(set(npattr.flatten())))
+              attr_t = torch.where(attr_t < 0, torch.abs(attr_t)+pmax,attr_t);
+            print("embed",i,name,(dim_in,dim_out),attr_t.shape);
+            print(" attr",set(attr_t.detach().cpu().numpy().flatten()));
             attr_t = embed(attr_t)
             em_list.append(attr_t)
         em_list.append(num_attr)

@@ -7,11 +7,18 @@ LI2022=/home/ubuntu/li2022
 HOME=/ihdd/ubuntu
 DATA=$HOME/t4c22data
 PATH=$ANACONDA/bin:.:$PATH
+PREP=true
 echo $PATH
 
+
+# initial & ihdd
 #if true; then
 if false; then
   conda env update -f environment.yaml
+  cd $HOME
+fi
+
+if $PREP; then
   cd $HOME
   mkdir $DATA
   cd $DATA
@@ -58,8 +65,7 @@ if false; then
   exit
 fi
 
-#if true; then
-if false; then
+if $PREP; then
   #python -m pip install -r install-extras-torch-geometric.txt -f https://data.pyg.org/whl/torch-1.11.0+${CUDA}.html
   python t4c22/misc/check_torch_geometric_setup.py
 
@@ -77,10 +83,7 @@ if false; then
   python t4c22/prepare_training_check_labels.py -d $DATA > t4c22/tmp3.txt 2>&1
   echo preparedone
   date
-fi
 
-if false; then
-#if true; then
   ip2p.sh data/data_preprocess.ipynb > data/data_preprocess.py
   cd data
   rm tmp.txt
@@ -92,22 +95,20 @@ if false; then
   cd ..
 fi
 
-#if true; then
-if false; then
+if $PREP; then
   # screen run.sh
   echo cluster
   date
   ip2p.sh model/cluster.ipynb > model/cluster.py
   cd model
-  rm tmp.txt
-  python -u cluster.py > tmp.txt 2>&1
+  rm tmpc.txt
+  python -u cluster.py > tmpc.txt 2>&1
   echo clusterdone
   date
   cd ..
 fi
 
-if false; then
-#if true; then
+if $PREP; then
   echo chkdata
   date
   python -u tool/chkdata.py $DATA/train/melbourne/cluster_input/counters_2020-06-02.parquet
