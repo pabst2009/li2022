@@ -501,7 +501,7 @@ if __name__ == "__main__":
                     print(val_loss, best_score)
                     if val_loss < best_score:
                         best_score = val_loss
-                        torch.save(model.state_dict(), model_save_dir/"GNN_model_{}_{}.pt".format(city,run))
+                        #torch.save(model.state_dict(), model_save_dir/"GNN_model_{}_{}.pt".format(city,run))
                     print(f"{city}  val_loss={val_loss} after epoch {epoch} of run {run} best_score={best_score}")
 
         vaild_scores[city] = best_score 

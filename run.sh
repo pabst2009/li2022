@@ -8,13 +8,13 @@ HOME=/ihdd/ubuntu
 DATA=$HOME/t4c22data
 PATH=$ANACONDA/bin:.:$PATH
 PREP=false
+PY=false
 echo $PATH
 
 
 # initial & ihdd
 #if [ $PY -o $PREP ] ; then
-if $PREP ; then
-#if false ; then
+if $PY ; then
   conda env update -f environment.yaml
   cd $HOME
 fi
@@ -64,7 +64,7 @@ python -u chkgpu.py; exit
 fi
 
 #if [ $PY -o $PREP ] ; then
-if $PREP ; then
+if $PY ; then
 #if false ; then
   python -m pip install wandb
 fi
@@ -137,6 +137,7 @@ if true; then
   python -u GNN_model_train.py 3 1 2 > tmptrain.txt 2>&1
   python -u GNN_model_train.py 3 1 3 > tmptrain.txt 2>&1
   python -u GNN_model_train.py 30 1 1 > tmptrain.txt 2>&1
+  python -u GNN_model_train.py 30 1 2 > tmptrain.txt 2>&1
   echo test
   date
   #python -u GNN_model_test.py >> tmptest.txt 2>&1
