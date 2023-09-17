@@ -138,7 +138,7 @@ if true; then
   #date; python -u GNN_model_test.py; date; exit
   echo train
   date
-  python -u GNN_model_train.py 30 1 0 3 > tmptrain.txt 2>&1
+  python -u GNN_model_train.py 30 1 0 2 > tmptrain.txt 2>&1
   echo test
   date
   #python -u GNN_model_test.py >> tmptest.txt 2>&1
