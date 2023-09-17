@@ -124,11 +124,14 @@ if true; then
   echo model
   cd model
   rm tmptrain.txt tmptest.txt tmpsub.txt
-  date; python -u GNN_model_train.py 1 1 1; date; exit
+  #date; python -u GNN_model_train.py 1 1 1; date; exit
   #date; python -u GNN_model_test.py; date; exit
   echo train
   date
-  python -u GNN_model_train.py 1 1 1 > tmptrain.txt 2>&1
+  python -u GNN_model_train.py 3 1 1 > tmptrain.txt 2>&1
+  python -u GNN_model_train.py 3 1 2 > tmptrain.txt 2>&1
+  python -u GNN_model_train.py 3 1 3 > tmptrain.txt 2>&1
+  python -u GNN_model_train.py 30 1 1 > tmptrain.txt 2>&1
   echo test
   date
   #python -u GNN_model_test.py >> tmptest.txt 2>&1

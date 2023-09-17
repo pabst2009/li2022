@@ -405,7 +405,7 @@ if __name__ == "__main__":
         #epochs = 20; runs = 9
         #epochs=3; runs=2; filt=0; # 0:none, 1:10days, 2:months,3:3months
         epochs,runs,filt=[int(e) for e in sys.argv[1:]];
-        wandb.init(project="li2022",name="epochs:%d runs:%d filter:%d %s"%(epochs,runs,filt,city))
+        wandb.init(project="li2022",name="epochs:%d runs:%d filter:%d %s %s"%(epochs,runs,filt,city,gpu))
         wc=wandb.config;
         wc.epochs=epochs; wc.runs=runs; wc.filter=filt;
         print(wc);
