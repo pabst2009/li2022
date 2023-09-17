@@ -7,14 +7,14 @@ LI2022=/home/ubuntu/li2022
 HOME=/ihdd/ubuntu
 DATA=$HOME/t4c22data
 PATH=$ANACONDA/bin:.:$PATH
-PREP=true; PY=true # ihdd
-#PREP=false; PY=false 
+#PREP=true; PY=true # ihdd
+PREP=false; PY=false 
 echo $PATH
 
 if true ; then
+  git pull
   git commit -am "aws"
   git push
-  git pull
 fi
 
 # initial & ihdd
@@ -134,7 +134,7 @@ if true; then
   echo model
   cd model
   rm tmptrain.txt tmptest.txt tmpsub.txt
-  date; python -u GNN_model_train.py 1 1 1 2; date; exit
+  date; python -u GNN_model_train.py 1 1 1 4; date; exit
   #date; python -u GNN_model_test.py; date; exit
   echo train
   date
