@@ -58,6 +58,11 @@ CUDA="cu122"
 
 cd $LI2022
 
+if false ; then
+cd tool
+python -u chkgpu.py; exit
+fi
+
 #if [ $PY -o $PREP ] ; then
 if $PREP ; then
 #if false ; then

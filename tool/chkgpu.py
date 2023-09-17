@@ -44,12 +44,9 @@ import psutil
 import time
 import subprocess
 import json
-import wandb
-#os.environ["WANDB_DISABLED"]="true"
-wandb.login() # only once
 
 mem=psutil.virtual_memory()
-NWORKER=4; # g4dn T4, g5 A10
+NWORKER=10; # g4dn T4
 
 class GNN_Layer(MessagePassing):
    
@@ -274,6 +271,7 @@ def train(model, dataset, optimizer, batch_size, device):
     )):
         
         data = to_var(data,device)
+        exit();
 
         #print("train i",i,"model start mem",mem.percent,"%");
         #print("dataset",len(dataset),"batchsize",batch_size);
@@ -303,7 +301,6 @@ def train(model, dataset, optimizer, batch_size, device):
     lens = len(dataset) // batch_size
     #print("train end");
     print("train_loss:{:.5f} loss_cc: {:.5f} loss_speed: {:.5f} loss_vol:{:.5f} lelps:{:d} gelps:{:d}\n".format(losses/lens,losses2/lens,losses1/lens,losses3/lens,int(time.time()-start),int(time.time()-gstart)))
-    wandb.log({"train_loss":losses/lens})
     return losses/lens
 
 
@@ -348,7 +345,6 @@ def vaild(model, validation_dataset, batch_size, device):
 
     lens = len(validation_dataset)//batch_size
     print("valid_loss:{:.5f} loss_cc: {:.5f} loss_speed: {:.5f} loss_vol:{:.5f} lelps:{:d} gelps:{:d}\n".format(losses/lens,losses2/lens,losses1/lens,losses3/lens,int(time.time()-start),int(time.time()-gstart)))
-    wandb.log({"valid_loss":losses/lens})
     return losses/lens 
 @torch.no_grad()
 def test(model, test_dataset, batch_size, device):
@@ -402,22 +398,16 @@ if __name__ == "__main__":
 
         #batch_size =2 # memory error in g4dn
         batch_size =1
-        #epochs = 20; runs = 9
-        #epochs=3; runs=2; filt=0; # 0:none, 1:10days, 2:months,3:3months
-        epochs,runs,filt=[int(e) for e in sys.argv[1:]];
-        wandb.init(project="li2022",name="epochs:%d runs:%d filter:%d %s %s"%(epochs,runs,filt,city,gpu))
-        wc=wandb.config;
-        wc.epochs=epochs; wc.runs=runs; wc.filter=filt;
-        print(wc);
+        epochs=1; runs=1; filt=1; # 0:none, 1:10days, 2:months,3:3months
 
         vaild_score = []
         print("mem",mem.percent,"%");
         dataset=None;
-        if wc.filter==1:
+        if filt==1:
           dataset = T4c22Dataset(root=BASEDIR, city=city, split=split, cachedir=Path(str(BASEDIR)+"/tmp"),day_t_filter=day_t_filter_10days)
-        elif wc.filter==2:
+        elif filt==2:
           dataset = T4c22Dataset(root=BASEDIR, city=city, split=split, cachedir=Path(str(BASEDIR)+"/tmp"),day_t_filter=day_t_filter_months)
-        elif wc.filter==3:
+        elif filt==3:
           dataset = T4c22Dataset(root=BASEDIR, city=city, split=split, cachedir=Path(str(BASEDIR)+"/tmp"),day_t_filter=day_t_filter_2months)
         else:
           dataset = T4c22Dataset(root=BASEDIR, city=city, split=split, cachedir=Path(str(BASEDIR)+"/tmp"))
@@ -473,7 +463,7 @@ if __name__ == "__main__":
 
         print("mem",mem.percent,"%");
 
-        for run in tqdm.tqdm(range(wc.runs), desc="runs", total=wc.runs):
+        for run in tqdm.tqdm(range(runs), desc="runs", total=runs):
             #print("run",run);
 
             model.apply(weight_init)
@@ -488,7 +478,7 @@ if __name__ == "__main__":
                     weight_decay=0.001
                 )
 
-            for epoch in tqdm.tqdm(range(1, 1 + wc.epochs), "epochs", total=wc.epochs):
+            for epoch in tqdm.tqdm(range(1, 1 + epochs), "epochs", total=epochs):
                 #print("epoch",epoch);
                 losses = train(model,  dataset=train_dataset, optimizer=optimizer, batch_size=batch_size, device=device)
                 train_losses[(run, epoch)] = losses
@@ -499,12 +489,9 @@ if __name__ == "__main__":
                     print(val_loss, best_score)
                     if val_loss < best_score:
                         best_score = val_loss
-                        torch.save(model.state_dict(), model_save_dir/"GNN_model_{}_{}.pt".format(city,run))
                     print(f"{city}  val_loss={val_loss} after epoch {epoch} of run {run} best_score={best_score}")
 
         vaild_scores[city] = best_score 
         print(vaild_score)
     print(vaild_scores)
-    wandb.log({"core":gpucore,"mem":gpumem,"best_score":vaild_scores['melbourne'],'elps':time.time()-gstart,"ndata":len(dataset)})
-    wandb.finish()
     print("train end"); 
