@@ -13,7 +13,8 @@ echo $PATH
 
 # initial & ihdd
 #if [ $PY -o $PREP ] ; then
-if false ; then
+if $PREP ; then
+#if false ; then
   conda env update -f environment.yaml
   cd $HOME
 fi
@@ -58,7 +59,8 @@ CUDA="cu122"
 cd $LI2022
 
 #if [ $PY -o $PREP ] ; then
-if false ; then
+if $PREP ; then
+#if false ; then
   python -m pip install wandb
 fi
 

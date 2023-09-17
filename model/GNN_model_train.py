@@ -376,7 +376,7 @@ if __name__ == "__main__":
     print("device",device);
     device = torch.device(device)
     gpu=torch.cuda.get_device_name()
-    spec={'Tesla T4':(2560,16)}
+    spec={'Tesla T4':(2560,16),'NVIDIA A10G':(9216,24)}
     gpucore,gpumem=spec[gpu]
     print(gpu,(gpucore,gpumem));
     #gpucap=torch.cuda.get_device_capability()
