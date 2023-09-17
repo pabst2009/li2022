@@ -402,13 +402,13 @@ if __name__ == "__main__":
         print("city",city);
 
         #batch_size =2 # memory error in g4dn
-        batch_size =1
+        #batch_size =1
         #epochs = 20; runs = 9
         #epochs=3; runs=2; filt=0; # 0:none, 1:10days, 2:months,3:3months
-        epochs,runs,filt=[int(e) for e in sys.argv[1:]];
+        epochs,runs,filt,batch_size=[int(e) for e in sys.argv[1:]];
         wandb.init(project="li2022",name="epochs:%d runs:%d filter:%d %s %s"%(epochs,runs,filt,city,gpu))
         wc=wandb.config;
-        wc.epochs=epochs; wc.runs=runs; wc.filter=filt;
+        wc.epochs=epochs; wc.runs=runs; wc.filter=filt; wc.batch_size=batch_size;
         print(wc);
 
         vaild_score = []
@@ -466,8 +466,8 @@ if __name__ == "__main__":
         new_edge_index  = np.load("../data/road_graph/{}/new_edge_index.npy".format(city))
         new_edge_index = torch.tensor(new_edge_index, dtype=torch.long)
         edge_indexs = []
-        for i in range(batch_size):
-            print("%d/%d"%(i,batch_size));
+        for i in range(wc.batch_size):
+            print("%d/%d"%(i,wc.batch_size));
             x = new_edge_index+(i*city_attr["edges"])
             edge_indexs.append(x)
         new_edge_index  = torch.cat(edge_indexs,dim=-1)
@@ -492,11 +492,11 @@ if __name__ == "__main__":
 
             for epoch in tqdm.tqdm(range(1, 1 + wc.epochs), "epochs", total=wc.epochs):
                 #print("epoch",epoch);
-                losses = train(model,  dataset=train_dataset, optimizer=optimizer, batch_size=batch_size, device=device)
+                losses = train(model,  dataset=train_dataset, optimizer=optimizer, batch_size=wc.batch_size, device=device)
                 train_losses[(run, epoch)] = losses
                 if epoch % eval_steps == 0:
 
-                    val_loss = vaild(model,  validation_dataset=val_dataset, batch_size=batch_size, device=device)
+                    val_loss = vaild(model,  validation_dataset=val_dataset, batch_size=wc.batch_size, device=device)
                     val_losses[(run, epoch)] = val_loss
                     print(val_loss, best_score)
                     if val_loss < best_score:
