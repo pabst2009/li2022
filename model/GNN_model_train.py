@@ -401,7 +401,8 @@ if __name__ == "__main__":
     for city  in cities:
         print("city",city);
 
-        #batch_size =2 # memory error in g4dn
+        #batch_size =2 # memory error in g4dn T4
+        #batch_size =5 # memory error in g5 A10
         #batch_size =1
         #epochs = 20; runs = 9
         #epochs=3; runs=2; filt=0; # 0:none, 1:10days, 2:months,3:3months
