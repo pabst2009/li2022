@@ -40,8 +40,6 @@ if $PREP; then
   cd ..
 fi
 
-exit;
-
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
 __conda_setup="$($ANACONDA'/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
@@ -129,6 +127,7 @@ if $PREP; then
   date
 fi
 
+exit;
 
 #if false; then
 if true; then
