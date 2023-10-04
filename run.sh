@@ -127,8 +127,6 @@ if $PREP; then
   date
 fi
 
-exit;
-
 #if false; then
 if true; then
   echo model
