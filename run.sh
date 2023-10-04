@@ -137,7 +137,7 @@ if true; then
   echo train
   date
   # epoch=3, runs=1, filt=1(0:none, 1:10days, 2:month, 3:3months), batchsize=1
-  python -u GNN_model_train.py 3 1 1 1 # wandb
+  python -u GNN_model_train.py 3 1 1 1 # wandb c7d55c35b47f6617be89004f3da57bb17578312b
   #python -u GNN_model_train.py 3 1 1 1 > tmptrain.txt 2>&1 # T4
   #python -u GNN_model_train.py 30 1 0 2 > tmptrain.txt 2>&1 # A10
   echo test
