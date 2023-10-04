@@ -40,6 +40,7 @@ if $PREP; then
   cd ..
 fi
 
+exit;
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
