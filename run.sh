@@ -8,7 +8,7 @@ HOME=/ihdd/ubuntu
 DATA=$HOME/t4c22data
 PATH=$ANACONDA/bin:.:$PATH
 PREP=true; PY=true # ihdd
-#PREP=false; PY=false 
+PREP=false; PY=false 
 echo $PATH
 
 if true ; then
