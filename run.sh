@@ -7,8 +7,8 @@ LI2022=/home/ubuntu/li2022
 HOME=/ihdd/ubuntu
 DATA=$HOME/t4c22data
 PATH=$ANACONDA/bin:.:$PATH
-#PREP=true; PY=true # ihdd
-PREP=false; PY=false 
+PREP=true; PY=true # ihdd
+#PREP=false; PY=false 
 echo $PATH
 
 if true ; then
@@ -146,7 +146,7 @@ if true; then
   #python -u submission_eta.py >> tmpsub.txt 2>&1 
   echo done
   cd ..
-  python -u tool/chkdata.py $DATA/submission/ensemble_cc_result/melbourne/labels/cc_labels_test.parquet
+  #python -u tool/chkdata.py $DATA/submission/ensemble_cc_result/melbourne/labels/cc_labels_test.parquet
   exit
 fi
 
