@@ -10,6 +10,7 @@ DATA=$HOME/mindata
 PATH=$ANACONDA/bin:.:$PATH
 PREP=true; PY=true # ihdd
 PREP=false; PY=false 
+PREP=false; PY=true
 echo $PATH
 
 if true ; then
