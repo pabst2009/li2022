@@ -6,10 +6,10 @@ ANACONDA=/ihdd/anaconda3
 LI2022=/home/ubuntu/li2022
 HOME=/ihdd/ubuntu
 DATA=$HOME/t4c22data
-DATA=$HOME/mindata
+#DATA=$HOME/mindata
 PATH=$ANACONDA/bin:.:$PATH
 PREP=true; PY=true # ihdd
-PREP=false; PY=false 
+#PREP=false; PY=false 
 echo $PATH
 
 if true ; then
@@ -71,7 +71,7 @@ fi
 #if [ $PY -o $PREP ] ; then
 if $PY ; then
 #if false ; then
-  python -m pip install wandb
+  python -m pip install wandb torch_geometric
 fi
 
 python -m pip install wandb
