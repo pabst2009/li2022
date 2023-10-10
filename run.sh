@@ -74,7 +74,7 @@ if $PY ; then
   python -m pip install wandb
 fi
 
-python t4c22/misc/check_torch_geometric_setup.py
+python -m pip install torch_geometric
 if $PREP; then
   # error
   #python -m pip install -r install-extras-torch-geometric.txt -f https://data.pyg.org/whl/torch-1.11.0+${CUDA}.html
