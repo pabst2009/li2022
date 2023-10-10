@@ -41,7 +41,6 @@ if $PREP; then
   cd ..
 fi
 
-
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
 __conda_setup="$($ANACONDA'/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
@@ -129,7 +128,6 @@ if $PREP; then
   date
 fi
 
-
 #if false; then
 if true; then
   echo model
@@ -139,7 +137,10 @@ if true; then
   #date; python -u GNN_model_test.py; date; exit
   echo train
   date
-  python -u GNN_model_train.py 30 1 0 2 > tmptrain.txt 2>&1
+  # epoch=3, runs=1, filt=1(0:none, 1:10days, 2:month, 3:3months), batchsize=1
+  python -u GNN_model_train.py 1 1 1 1 # wandb c7d55c35b47f6617be89004f3da57bb17578312b
+  #python -u GNN_model_train.py 3 1 1 1 > tmptrain.txt 2>&1 # T4
+  #python -u GNN_model_train.py 30 1 0 2 > tmptrain.txt 2>&1 # A10
   echo test
   date
   #python -u GNN_model_test.py >> tmptest.txt 2>&1
