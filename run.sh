@@ -9,7 +9,7 @@ DATA=$HOME/t4c22data
 #DATA=$HOME/mindata
 PATH=$ANACONDA/bin:.:$PATH
 PREP=true; PY=true # ihdd
-PREP=false; PY=false 
+#PREP=false; PY=false 
 echo $PATH
 
 if true ; then
