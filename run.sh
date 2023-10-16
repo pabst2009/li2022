@@ -9,6 +9,7 @@ DATA=$HOME/t4c22data
 #DATA=$HOME/mindata
 PATH=$ANACONDA/bin:.:$PATH
 PREP=true; PY=true # ihdd
+PY=false
 #PREP=false; PY=false 
 echo $PATH
 
@@ -104,6 +105,8 @@ if $PREP; then
   date
   cd ..
 fi
+
+exit
 
 if $PREP; then
   # screen run.sh
