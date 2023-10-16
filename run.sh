@@ -90,9 +90,9 @@ if $PREP; then
   #python t4c22/prepare_training_data_eta.py -d $DATA > t4c22/tmp2.txt 2>&1
   #echo prepare3
   #date
-  python t4c22/prepare_training_check_labels.py -d $DATA > t4c22/tmp3.txt 2>&1
-  echo preparedone
-  date
+  #python t4c22/prepare_training_check_labels.py -d $DATA > t4c22/tmp3.txt 2>&1
+  #echo preparedone
+  #date
 
   ip2p.sh data/data_preprocess.ipynb > data/data_preprocess.py
   cd data

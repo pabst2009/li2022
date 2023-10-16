@@ -129,7 +129,8 @@ def generate_cc_labels(city, in_folder, out_folder, road_graph_folder: Path, res
 
 def generate_training_labels(data_folder: Path, resume):
     print(f"Processing label data in {data_folder}")
-    for city in ["london", "madrid", "melbourne"]:
+    #for city in ["london", "madrid", "melbourne"]:
+    for city in ["melbourne"]:
         data_folder_train_city_labels = data_folder / "train" / city / "labels"
         data_folder_train_city_labels.mkdir(exist_ok=True, parents=True)
         generate_cc_labels(
