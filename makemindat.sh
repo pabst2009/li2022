@@ -15,6 +15,7 @@ mkdir $DATA/train/melbourne
 mkdir $DATA/train/melbourne/input
 cp $ODATA/train/melbourne/input/* $DATA/train/melbourne/input
 
+exit
 mkdir $DATA/speed_classes
 mkdir $DATA/speed_classes/melbourne
 cp $ODATA/speed_classes/melbourne/* $DATA/speed_classes/melbourne/
