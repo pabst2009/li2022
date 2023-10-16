@@ -5,13 +5,16 @@
 ANACONDA=/ihdd/anaconda3
 LI2022=/home/ubuntu/li2022
 HOME=/ihdd/ubuntu
-DATA=$HOME/t4c22data
-#DATA=$HOME/mindata
+SFX=t4c22data
+#SFX=mindata
+DATA=$HOME/$SFX
 PATH=$ANACONDA/bin:.:$PATH
 PREP=true; PY=true # ihdd
 PY=false
 #PREP=false; PY=false 
 echo $PATH
+
+cp t4c22/t4c22_config.$SFX.json t4c22/t4c22_config.json
 
 if true ; then
   git pull
