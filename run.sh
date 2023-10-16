@@ -106,8 +106,6 @@ if $PREP; then
   cd ..
 fi
 
-exit
-
 if $PREP; then
   # screen run.sh
   echo cluster
