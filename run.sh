@@ -9,7 +9,7 @@ DATA=$HOME/t4c22data
 #DATA=$HOME/mindata
 PATH=$ANACONDA/bin:.:$PATH
 PREP=true; PY=true # ihdd
-PREP=false; PY=false 
+#PREP=false; PY=false 
 echo $PATH
 
 if true ; then
@@ -40,6 +40,8 @@ if $PREP; then
   rm T4C_INPUTS_ETA_2022.zip
   cd ..
 fi
+
+exit
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
