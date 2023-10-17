@@ -11,7 +11,7 @@ DATA=$HOME/$SFX
 PATH=$ANACONDA/bin:.:$PATH
 PREP=true; PY=true # ihdd
 #PY=false
-#PREP=false; PY=false 
+PREP=false; PY=false 
 echo $PATH
 
 cp t4c22/t4c22_config.$SFX.json t4c22/t4c22_config.json
