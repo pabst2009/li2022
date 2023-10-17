@@ -2,6 +2,7 @@
 
 HOME=/ihdd/ubuntu
 ODATA=$HOME/t4c22data
+ODATA=$HOME/mindataorig
 DATA=$HOME/mindata
 mkdir $DATA
 mkdir $DATA/road_graph
