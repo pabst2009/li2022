@@ -4,6 +4,7 @@ ANACONDA=/ihdd/anaconda3
 LI2022=/home/ubuntu/li2022
 HOME=/ihdd/ubuntu
 DATA=$HOME/t4c22data
+DATA=$HOME/mindata
 PATH=$ANACONDA/bin:.:$PATH
 PREP=true; PY=true # ihdd
 #PREP=false; PY=false 
