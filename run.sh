@@ -10,8 +10,8 @@ SFX=t4c22data
 DATA=$HOME/$SFX
 PATH=$ANACONDA/bin:.:$PATH
 PREP=true; PY=true # ihdd
-#PY=false
-PREP=false; PY=false 
+PY=false
+#PREP=false; PY=false 
 echo $PATH
 
 cp t4c22/t4c22_config.$SFX.json t4c22/t4c22_config.json
@@ -43,6 +43,14 @@ if $PREP; then
   rm T4C_INPUTS_2022.zip
   rm T4C_INPUTS_ETA_2022.zip
   cd ..
+fi
+
+if false; then
+  \rm -rf /ihdd/ubuntu/mindata/movie
+  \rm -rf /ihdd/ubuntu/mindata/test
+  \rm -rf /ihdd/ubuntu/mindata/loop_counter
+  \rm -rf /ihdd/ubuntu/mindata/road_graph/melbourne/road_graph_supersegments.parquet
+  \rm -rf /ihdd/ubuntu/mindata/road_graph/melbourne/cell_mapping.parquet
 fi
 
 # >>> conda initialize >>>
