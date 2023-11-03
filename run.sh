@@ -10,7 +10,7 @@ SFX=t4c22data
 DATA=$HOME/$SFX
 PATH=$ANACONDA/bin:.:$PATH
 PREP=true; PY=true # ihdd
-PY=false
+#PY=false
 #PREP=false; PY=false 
 echo $PATH
 
@@ -85,6 +85,8 @@ if $PY ; then
 #if false ; then
   python -m pip install wandb torch_geometric
 fi
+
+exit
 
 if $PREP; then
   # error
