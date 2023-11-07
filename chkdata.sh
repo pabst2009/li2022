@@ -33,9 +33,9 @@ CUDA="cu122"
 cd $LI2022
 cd tool
 
-#python -u chkdata.py /ihdd/ubuntu/t4c22data/road_graph/melbourne/road_graph_nodes.parquet 
+python -u chkdata.py /ihdd/ubuntu/t4c22data/road_graph/melbourne/road_graph_nodes.parquet 
 #'counter_info num_assigned'
-python -u chkdata.py /ihdd/ubuntu/t4c22data/road_graph/melbourne/road_graph_edges.parquet
+#python -u chkdata.py /ihdd/ubuntu/t4c22data/road_graph/melbourne/road_graph_edges.parquet
 #'length_meters counter_distance' 
 #'importance lanes tunnel length_meters' 
 #'parsed_maxspeed speed_kph highway oneway'
