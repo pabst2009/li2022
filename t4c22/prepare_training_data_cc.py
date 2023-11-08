@@ -112,6 +112,8 @@ def generate_cc_labels(city, in_folder, out_folder, road_graph_folder: Path, res
             compute_cc(ms, ff, sl, vc)
             for ms, ff, sl, vc in zip(cc_df["median_speed_kph"], cc_df["free_flow_kph"], cc_df[speed_limit_field], cc_df["volume_class"])
         ]
+        print("ccdf");
+        print(cc_df);
         cc_df = cc_df.reset_index()
         cc_df = cc_df[["u", "v", "day", "t", "cc"]]
         cc_df = cc_df[cc_df["cc"] > 0]

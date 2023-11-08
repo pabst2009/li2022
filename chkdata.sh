@@ -33,7 +33,8 @@ CUDA="cu122"
 cd $LI2022
 cd tool
 
-python -u chkdata.py /ihdd/ubuntu/mydata/train/melbourne/labels/cc_labels_2023-10-21.parquet 
+python -u chkdata.py /ihdd/ubuntu/mindata/train/melbourne/labels/cc_labels_2020-12-30.parquet 
+#python -u chkdata.py /ihdd/ubuntu/mydata/train/melbourne/labels/cc_labels_2023-10-21.parquet 
 #python -u chkdata.py /ihdd/ubuntu/t4c22data/speed_classes/melbourne/speed_classes_2020-09-11.parquet 'day t volume_class'
 #python -u chkdata.py /ihdd/ubuntu/mindataorig/road_graph/melbourne/road_graph_edges.parquet 
 #python -u chkdata.py /ihdd/ubuntu/mindata/road_graph/melbourne/road_graph_edges.parquet 
