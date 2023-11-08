@@ -33,15 +33,16 @@ CUDA="cu122"
 cd $LI2022
 cd tool
 
-python -u chkdata.py /ihdd/ubuntu/mindataorig/road_graph/melbourne/road_graph_edges.parquet 
-python -u chkdata.py /ihdd/ubuntu/mindata/road_graph/melbourne/road_graph_edges.parquet 
+#python -u chkdata.py /ihdd/ubuntu/t4c22data/speed_classes/melbourne/speed_classes_2020-09-11.parquet 'day t volume_class'
+#python -u chkdata.py /ihdd/ubuntu/mindataorig/road_graph/melbourne/road_graph_edges.parquet 
+#python -u chkdata.py /ihdd/ubuntu/mindata/road_graph/melbourne/road_graph_edges.parquet 
 #python -u chkdata.py /ihdd/ubuntu/t4c22data/road_graph/melbourne/road_graph_nodes.parquet 
 #'counter_info num_assigned'
 #python -u chkdata.py /ihdd/ubuntu/t4c22data/road_graph/melbourne/road_graph_edges.parquet
 #'length_meters counter_distance' 
 #'importance lanes tunnel length_meters' 
 #'parsed_maxspeed speed_kph highway oneway'
-#python -u chkdata.py /ihdd/ubuntu/t4c22data/train/melbourne/input/counters_2020-07-30.parquet; 
+python -u chkdata.py /ihdd/ubuntu/t4c22data/train/london/input/counters_2020-01-31.parquet; 
 
 #python -u chkdata.py /ihdd/ubuntu/t4c22data/road_graph/melbourne/cell_mapping.parquet 
 #python -u chkdata.py /ihdd/ubuntu/t4c22data/road_graph/melbourne/road_graph_supersegments.parquet 
